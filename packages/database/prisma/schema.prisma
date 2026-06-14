@@ -16,4 +16,35 @@ model User {
   id    Int     @id @default(autoincrement()) 
   email String  @unique
   name  String?
+  // websites Website[]
+}
+
+model Website {
+  id          String   @id @default(uuid())
+  url         String   @unique
+  description String?
+  // userId      Int
+  timeAdded   DateTime @default(now())
+  ticks WebsiteTick[]
+  // user        User     @relation(fields: [userId], references: [id])
+}
+
+model WebsiteTick {
+  id String @id @default(uuid())
+  response_time_ms Int
+  status WebsiteStatus
+  websiteId String
+  website Website @relation(fields: [websiteId], references: [id])
+  regionId String
+  region Region @relation(fields: [regionId], references: [id])
+}
+model Region {
+  id   String @id @default(uuid())
+  name String @unique
+  ticks WebsiteTick[]
+}
+enum WebsiteStatus {
+  UP
+  DOWN
+  Unknown
 }
