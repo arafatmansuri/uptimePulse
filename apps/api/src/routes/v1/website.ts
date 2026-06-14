@@ -4,6 +4,6 @@ import { addWebsite, getWebsiteStatus } from "../../controllers/v1/websiteContro
 const websitesRouter = Router();
 
 websitesRouter.post("/websites", addWebsite);
-websitesRouter.get("/status/:websiteId", getWebsiteStatus);
+websitesRouter.get("/status/:id", getWebsiteStatus);
 
 export default websitesRouter;
