@@ -13,20 +13,21 @@ datasource db {
 }
 
 model User { 
-  id    Int     @id @default(autoincrement()) 
+  id    String  @id @default(uuid()) 
   email String  @unique
   name  String?
-  // websites Website[]
+  password String
+  websites Website[]
 }
 
 model Website {
   id          String   @id @default(uuid())
   url         String   @unique
   description String?
-  // userId      Int
+  userId      String
   timeAdded   DateTime @default(now())
   ticks WebsiteTick[]
-  // user        User     @relation(fields: [userId], references: [id])
+  user        User     @relation(fields: [userId], references: [id])
 }
 
 model WebsiteTick {
@@ -37,6 +38,7 @@ model WebsiteTick {
   website Website @relation(fields: [websiteId], references: [id])
   regionId String
   region Region @relation(fields: [regionId], references: [id])
+  createdAt DateTime @default(now())
 }
 model Region {
   id   String @id @default(uuid())
