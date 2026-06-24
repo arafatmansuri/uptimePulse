@@ -17,7 +17,8 @@ export const addWebsite = asyncHandler(async (req, res) => {
     const website = await prisma.website.create({
         data: {
             url: req.body.url,
-            description: req.body.description
+            description: req.body.description,
+            userId:"abc"
         }
     });
     res.status(201).json({ website });

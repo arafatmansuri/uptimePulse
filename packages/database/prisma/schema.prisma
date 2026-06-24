@@ -18,6 +18,7 @@ model User {
   name  String? @unique
   password String
   websites Website[]
+  refreshToken String?
 }
 
 model Website {
