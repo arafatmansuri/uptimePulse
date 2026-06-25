@@ -66,3 +66,10 @@ export const signIn = asyncHandler(async (req,res) => {
         {name:"refresh_token", value:refreshToken, options:{httpOnly:true, secure:true, sameSite:"none", maxAge: 3600000, path:"/"}}
     ]);
 });
+export const getuser = asyncHandler(async (req,res) => {
+    const user = req.user;
+    if (!user) {
+        throw AppError.unauthorized("User not authenticated");
+    }
+    ApiResponse.success(res, { user }, "User retrieved successfully");
+});

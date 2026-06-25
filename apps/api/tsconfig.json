@@ -14,7 +14,8 @@
     "forceConsistentCasingInFileNames": true
   },
   "include": [
-    "src/**/*"
+    "src/**/*",
+    "src/@types/express"
   ],
   "exclude": [
     "node_modules",
