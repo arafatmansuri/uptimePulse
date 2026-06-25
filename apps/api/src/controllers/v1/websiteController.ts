@@ -1,40 +1,42 @@
 import { prisma } from "@repo/db";
-import z from "zod";
+import { ApiResponse } from "../../lib/ApiResponse";
 import { AppError } from "../../lib/AppError";
 import { asyncHandler } from "../../lib/asyncHandler";
-
-const addWebsiteSchema = z.object({
-    url: z.url({error: "Invalid URL format"}).nonempty({message: "URL is required"}).nonoptional({error: "URL is required"}),
-    description: z.string().optional()
-});
+import { addWebsiteSchema } from "../../validations/websiteValidation";
 
 
 export const addWebsite = asyncHandler(async (req, res) => {
+    const userId = req.user?.id;
+    if (!userId) {
+        throw AppError.unauthorized("User not authenticated");
+    }
     const validation = addWebsiteSchema.safeParse(req.body);
     if (!validation.success) {
-        AppError.badRequest(validation.error.issues[0].message || "Invalid input", { field: validation.error.issues[0].path.join(".") });
+        throw AppError.badRequest(validation.error.issues[0].message || "Invalid input", { field: validation.error.issues[0].path.join(".") });
     }
     const website = await prisma.website.create({
         data: {
             url: req.body.url,
             description: req.body.description,
-            userId:"abc"
+            userId: userId
         }
     });
-    res.status(201).json({ website });
+    ApiResponse.success(res, { website }, "Website added successfully", 201);
 });
 export const getWebsiteStatus = asyncHandler(async (req, res) => {
     if (!req.params.id || typeof req.params.id !== "string") {
-        AppError.badRequest("Invalid website ID", { field: "id" });
-        return;
+        throw AppError.badRequest("Invalid website ID", { field: "id" });
     }
-        const website = await prisma.website.findUnique({
-            where: { id: req.params.id },
-            include: { ticks: true }
-        });
-        if (!website) {
-            AppError.notFound("Website not found");
-            return;
-        }
-        res.json({ website });
+    const userId = req.user?.id;
+    if (!userId) {
+        throw AppError.unauthorized("User not authenticated");
+    }
+    const website = await prisma.website.findUnique({
+        where: { id: req.params.id, userId: userId },
+        include: { ticks: true }
+    });
+    if (!website) {
+        throw AppError.notFound("Website not found");
+    }
+    ApiResponse.success(res, { website }, "Website retrieved successfully");
 });
