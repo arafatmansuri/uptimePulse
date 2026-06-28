@@ -17,15 +17,15 @@ export const signUp = asyncHandler(async (req,res) => {
     throw AppError.badRequest(parsedSignupData.error.issues[0].message || "Invalid input", { field: parsedSignupData.error.issues[0].path.join(".") });
    }
    const { name, email, password } = parsedSignupData.data;
-    const existingUser = await prisma.user.findUnique({where:{email,name}});
+    const existingUser = await prisma.user.findFirst({where:{email:email,name:name}});
     if (existingUser) {
         throw AppError.badRequest("User with this email or name already exists", { field: ["email", "name"] });
     }
     const hasedPassword = await hashPassword(password);
     const newUser = await prisma.user.create({
         data: {
-            name,
-            email,
+            name:name,
+            email:email,
             password: hasedPassword
         }
     });
@@ -33,9 +33,9 @@ export const signUp = asyncHandler(async (req,res) => {
     const refreshToken = generateToken(newUser.id, 'refresh');
     await prisma.user.update({
         where: { id: newUser.id },
-        data: { refreshToken }
+        data: { refreshToken:refreshToken }
     });
-    ApiResponse.success(res, { user: newUser }, "User created successfully", 201,[
+    ApiResponse.success(res, { user: newUser,token:accessToken }, "User created successfully", 201,[
         {name:"access_token", value:accessToken, options:{httpOnly:true, secure:true, sameSite:"none", maxAge: 3600000, path:"/"}},
         {name:"refresh_token", value:refreshToken, options:{httpOnly:true, secure:true, sameSite:"none", maxAge: 3600000, path:"/"}}
     ]);
@@ -47,7 +47,7 @@ export const signIn = asyncHandler(async (req,res) => {
     throw AppError.badRequest(parsedSignInData.error.issues[0].message || "Invalid input", { field: parsedSignInData.error.issues[0].path.join(".") });
    }
    const { email, password } = parsedSignInData.data;
-    const user = await prisma.user.findFirst({where:{email}});
+    const user = await prisma.user.findFirst({where:{email:email}});
     if (!user) {
         throw AppError.badRequest("User not found", { field: ["email"] });
     }
@@ -59,9 +59,9 @@ export const signIn = asyncHandler(async (req,res) => {
     const refreshToken = generateToken(user.id, 'refresh');
     await prisma.user.update({
         where: { id: user.id },
-        data: { refreshToken }
+        data: { refreshToken:refreshToken }
     });
-    ApiResponse.success(res, { user: user }, "User signed in successfully", 200,[
+    ApiResponse.success(res, { user: user,token:accessToken }, "User signed in successfully", 200,[
         {name:"access_token", value:accessToken, options:{httpOnly:true, secure:true, sameSite:"none", maxAge: 3600000, path:"/"}},
         {name:"refresh_token", value:refreshToken, options:{httpOnly:true, secure:true, sameSite:"none", maxAge: 3600000, path:"/"}}
     ]);

@@ -1,7 +1,10 @@
-import express from 'express';
-import v1Router from './routes/v1';
-import { globalErrorHandler } from './lib/ErrorHandler';
 import cookieParser from 'cookie-parser';
+import dotenv from 'dotenv';
+import express from 'express';
+import { env } from './config';
+import { globalErrorHandler } from './lib/ErrorHandler';
+import v1Router from './routes/v1';
+dotenv.config();
 
 const app = express();
 
