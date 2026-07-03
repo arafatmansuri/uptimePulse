@@ -1,5 +1,6 @@
 import { prisma } from "@repo/db";
 import { redisClient } from "@repo/redis-store";
+import 'dotenv/config';
 
 interface AddWebsite {
     id: string;
@@ -7,17 +8,26 @@ interface AddWebsite {
 }
 
 const addWebsite = async () => {
+    const redis = await redisClient;
+    // await prisma.$connect();
     let websites: AddWebsite[] = await prisma.website.findMany({
       select:{
         id:true,
         url:true,
       }
     });
-    const res1 = await redisClient.xAdd(
-  'betterstack:website', '*', {websites: JSON.stringify(websites)}
-);
-console.log(res1);
-redisClient.destroy();
+    for(let website of websites){
+        await redis.xAdd("betterstack:website","*",{
+            id: website.id,
+            url: website.url,
+        });
+    }
+    console.log("Added websites to redis:", JSON.stringify(websites));
+    // setTimeout(async () => {
+    //   await addWebsite();
+    // }, 3*60*1000);
+    // redis.destroy();
+    // prisma.$disconnect();
 }
 
-setInterval(addWebsite,3*60*1000)
+setInterval(addWebsite, 1 * 60 * 1000);

@@ -14,10 +14,15 @@ export const addWebsite = asyncHandler(async (req, res) => {
     if (!validation.success) {
         throw AppError.badRequest(validation.error.issues[0].message || "Invalid input", { field: validation.error.issues[0].path.join(".") });
     }
+    const {url,description} = validation.data;
+    const isURLExists = await prisma.website.findFirst({where:{url:url,userId:userId}});
+    if(isURLExists){
+        throw AppError.badRequest("Website with this URL already exists", { field: ["url"] });
+    }
     const website = await prisma.website.create({
         data: {
-            url: req.body.url,
-            description: req.body.description,
+            url: url,
+            description: description,
             userId: userId
         }
     });

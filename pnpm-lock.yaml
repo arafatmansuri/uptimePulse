@@ -84,6 +84,12 @@ importers:
       '@repo/redis-store':
         specifier: workspace:*
         version: link:../../packages/redis-store
+      dotenv:
+        specifier: ^17.4.2
+        version: 17.4.2
+      tsx:
+        specifier: ^4.22.4
+        version: 4.22.4
     devDependencies:
       typescript:
         specifier: ^4.0.0
@@ -142,6 +148,28 @@ importers:
         specifier: 5.9.2
         version: 5.9.2
 
+  apps/worker:
+    dependencies:
+      '@repo/db':
+        specifier: workspace:*
+        version: link:../../packages/database
+      '@repo/redis-store':
+        specifier: workspace:*
+        version: link:../../packages/redis-store
+      axios:
+        specifier: ^1.17.0
+        version: 1.17.0
+      dotenv:
+        specifier: ^17.4.2
+        version: 17.4.2
+      tsx:
+        specifier: ^4.22.4
+        version: 4.22.4
+    devDependencies:
+      typescript:
+        specifier: ^4.0.0
+        version: 4.9.5
+
   packages/database:
     dependencies:
       '@prisma/adapter-pg':
@@ -150,6 +178,9 @@ importers:
       '@prisma/client':
         specifier: ^7.8.0
         version: 7.8.0(prisma@7.8.0(@types/react-dom@19.2.2(@types/react@19.2.2))(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(typescript@5.9.2))(typescript@5.9.2)
+      '@prisma/extension-accelerate':
+        specifier: ^3.0.1
+        version: 3.0.1(@prisma/client@7.8.0(prisma@7.8.0(@types/react-dom@19.2.2(@types/react@19.2.2))(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(typescript@5.9.2))(typescript@5.9.2))
       dotenv:
         specifier: ^17.4.2
         version: 17.4.2
@@ -199,10 +230,32 @@ importers:
 
   packages/redis-store:
     dependencies:
+      dotenv:
+        specifier: ^17.4.2
+        version: 17.4.2
       redis:
         specifier: ^6.0.1
         version: 6.0.1
+      tsx:
+        specifier: ^4.22.4
+        version: 4.22.4
     devDependencies:
+      typescript:
+        specifier: ^4.0.0
+        version: 4.9.5
+
+  packages/seeder:
+    dependencies:
+      '@repo/db':
+        specifier: workspace:*
+        version: link:../database
+      dotenv:
+        specifier: ^17.4.2
+        version: 17.4.2
+    devDependencies:
+      ts-node:
+        specifier: ^10.0.0
+        version: 10.9.2(@types/node@22.15.3)(typescript@4.9.5)
       typescript:
         specifier: ^4.0.0
         version: 4.9.5
@@ -754,6 +807,12 @@ packages:
 
   '@prisma/engines@7.8.0':
     resolution: {integrity: sha512-jx3rCnNNrt5uzbkKlegtQ2GZHxSlihMCzutgT/BP6UIDF1r9tDI39hV/0T/cHZgzJ3ELbuQPXlVZy+Y1n0pcgw==}
+
+  '@prisma/extension-accelerate@3.0.1':
+    resolution: {integrity: sha512-xc+kn4AjjTzS9jsdD1JWCebB09y0Aj+C8GjjG7oUm81PF9psvmJOw5rxpl7tOEBz/8hmuNX996XL28ys/OLxVA==}
+    engines: {node: '>=22'}
+    peerDependencies:
+      '@prisma/client': '>=4.16.1'
 
   '@prisma/fetch-engine@7.8.0':
     resolution: {integrity: sha512-gwB0Euiz/DDRyxFRpLXYlK3RfaZUj1c5dAYMuhZYfApg7arknJlcb9bIsOHDppJmbqYaVA+yBIiFMDBfprsNPQ==}
@@ -3468,6 +3527,10 @@ snapshots:
       '@prisma/fetch-engine': 7.8.0
       '@prisma/get-platform': 7.8.0
 
+  '@prisma/extension-accelerate@3.0.1(@prisma/client@7.8.0(prisma@7.8.0(@types/react-dom@19.2.2(@types/react@19.2.2))(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(typescript@5.9.2))(typescript@5.9.2))':
+    dependencies:
+      '@prisma/client': 7.8.0(prisma@7.8.0(@types/react-dom@19.2.2(@types/react@19.2.2))(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(typescript@5.9.2))(typescript@5.9.2)
+
   '@prisma/fetch-engine@7.8.0':
     dependencies:
       '@prisma/debug': 7.8.0
@@ -4266,7 +4329,7 @@ snapshots:
       has-property-descriptors: 1.0.2
       has-proto: 1.2.0
       has-symbols: 1.1.0
-      hasown: 2.0.2
+      hasown: 2.0.4
       internal-slot: 1.1.0
       is-array-buffer: 3.0.5
       is-callable: 1.2.7
@@ -4337,7 +4400,7 @@ snapshots:
 
   es-shim-unscopables@1.1.0:
     dependencies:
-      hasown: 2.0.2
+      hasown: 2.0.4
 
   es-to-primitive@1.3.0:
     dependencies:
@@ -4628,7 +4691,7 @@ snapshots:
       call-bound: 1.0.4
       define-properties: 1.2.1
       functions-have-names: 1.2.3
-      hasown: 2.0.2
+      hasown: 2.0.4
       is-callable: 1.2.7
 
   functions-have-names@1.2.3: {}
@@ -4647,7 +4710,7 @@ snapshots:
       get-proto: 1.0.1
       gopd: 1.2.0
       has-symbols: 1.1.0
-      hasown: 2.0.2
+      hasown: 2.0.4
       math-intrinsics: 1.1.0
 
   get-port-please@3.2.0: {}
@@ -4757,7 +4820,7 @@ snapshots:
   internal-slot@1.1.0:
     dependencies:
       es-errors: 1.3.0
-      hasown: 2.0.2
+      hasown: 2.0.4
       side-channel: 1.1.0
 
   ipaddr.js@1.9.1: {}
@@ -4789,7 +4852,7 @@ snapshots:
 
   is-core-module@2.16.1:
     dependencies:
-      hasown: 2.0.2
+      hasown: 2.0.4
 
   is-data-view@1.0.2:
     dependencies:
@@ -4839,7 +4902,7 @@ snapshots:
       call-bound: 1.0.4
       gopd: 1.2.0
       has-tostringtag: 1.0.2
-      hasown: 2.0.2
+      hasown: 2.0.4
 
   is-set@2.0.3: {}
 

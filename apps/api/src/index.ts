@@ -1,7 +1,6 @@
 import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
 import express from 'express';
-import { env } from './config';
 import { globalErrorHandler } from './lib/ErrorHandler';
 import v1Router from './routes/v1';
 dotenv.config();
