@@ -6,7 +6,6 @@
   "scripts": {
     "build": "tsc",
     "start": "node dist/index.js",
-    "dev": "vitest run --watch",
     "git": "git add . && git commit -m \"${npm_config_m:-auto commit $(date)}\" && git push",
     "test": "vitest run"
   },
