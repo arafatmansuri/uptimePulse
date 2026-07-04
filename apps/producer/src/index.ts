@@ -15,7 +15,7 @@ const main = async () => {
       }
     });
     await xAddBulk(websites);
-    console.log("Added websites to redis:", JSON.stringify(websites));
+    console.log(`Added ${websites.length} websites to redis stream`);
 }
 
 setInterval(main, 1 * 60 * 1000);

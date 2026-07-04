@@ -39,7 +39,7 @@ export const getWebsiteStatus = asyncHandler(async (req, res) => {
     const website = await prisma.website.findUnique({
         where: { id: req.params.id, userId: userId },
         include: { ticks: {
-            take:1,
+            take:10,
             orderBy: { createdAt: "desc" }
         } }
     });
@@ -56,7 +56,7 @@ export const getWebsites = asyncHandler(async (req, res) => {
     const websites = await prisma.website.findMany({
         where: { userId: userId },
         include: { ticks: {
-            take:1,
+            take:10,
             orderBy: { createdAt: "desc" }
         } }
     });

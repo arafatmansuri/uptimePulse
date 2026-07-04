@@ -48,6 +48,7 @@ const main = async () => {
     const trackedWebsites:websiteTickCreateManyInput[] = await Promise.all(websitesToTrack.map(trackWebsites));
     await prisma.websiteTick.createMany({data: trackedWebsites});
     await xAck(CONSUMER_GROUP,websitesToTrack.map(w => w.id));
+    console.log(`Processed ${websitesToTrack.length} websites`);
 }
 }
 
