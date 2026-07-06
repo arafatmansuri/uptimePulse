@@ -1,9 +1,9 @@
-import { prisma } from "@repo/db";
+import { User } from "../../types";
 
 declare global {
     namespace Express {
         interface Request {
-        user?: Awaited<ReturnType<typeof prisma.user.findFirst>>;
+        user?: User;
         }
     }
 }

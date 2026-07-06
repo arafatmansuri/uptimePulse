@@ -12,7 +12,10 @@ export const userMiddleware = asyncHandler(async (req, res, next) => {
     if (!decodedToken || !decodedToken.userId) {
         throw AppError.unauthorized("Invalid access token");
     }
-    const user = await prisma.user.findFirst({where: { id: decodedToken.userId } });
+    const user = await prisma.user.findFirst({
+      where: { id: decodedToken.userId },
+      omit: { password: true, refreshToken: true },
+    });
     if (!user) {
         throw AppError.unauthorized("User not found");
     }
