@@ -23,7 +23,7 @@ model user {
 
 model website {
   id          String   @id @default(uuid())
-  url         String   @unique  
+  url         String
   description String?
   userId      String
   timeAdded   DateTime @default(now())
