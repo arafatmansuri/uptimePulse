@@ -1,5 +1,5 @@
 import { Methods } from "./constants";
-import { SignInValues, SignUpValues } from "./schemas";
+import { AddWebsiteValues, SignInValues, SignUpValues } from "./schemas";
 
 type ApiRequestData<T> = {
     data?: T;
@@ -7,4 +7,5 @@ type ApiRequestData<T> = {
     method?: Methods
 }
 
-export type AuthRequestData = ApiRequestData<SignInValues | SignUpValues>;
+export type AuthRequestData = ApiRequestData<SignInValues | SignUpValues>; 
+export type WebsiteRequestData = ApiRequestData<AddWebsiteValues>;
