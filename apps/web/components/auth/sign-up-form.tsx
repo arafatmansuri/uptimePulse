@@ -43,7 +43,7 @@ export function SignUpForm() {
       onSuccess(data) {
         console.log("success",data);
         setSignupSuccessMessage(data.message);
-        // navigate.push('/dashboard');
+        navigate.push('/dashboard');
       },
       onSettled() {
         setLoading(false);

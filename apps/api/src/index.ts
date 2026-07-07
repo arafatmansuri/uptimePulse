@@ -1,9 +1,9 @@
-import cookieParser from 'cookie-parser';
-import dotenv from 'dotenv';
-import express from 'express';
-import { globalErrorHandler } from './lib/ErrorHandler';
-import v1Router from './routes/v1';
+import cookieParser from "cookie-parser";
 import cors from "cors";
+import dotenv from "dotenv";
+import express from "express";
+import { globalErrorHandler } from "./lib/ErrorHandler";
+import v1Router from "./routes/v1";
 dotenv.config();
 
 const app = express();
@@ -11,6 +11,7 @@ const app = express();
 const allowedOrigins = [
   "http://localhost:3001",
   "http://127.0.0.1:3001",
+  "https://v36641r0-3001.inc1.devtunnels.ms",
 ];
 app.use(express.json());
 app.use(
@@ -27,7 +28,7 @@ app.use(
 );
 app.use(cookieParser());
 
-app.use('/api/v1', v1Router);
+app.use("/api/v1", v1Router);
 app.use(globalErrorHandler);
 
 const PORT = process.env.PORT || 3000;
