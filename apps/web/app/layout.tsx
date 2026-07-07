@@ -4,6 +4,7 @@ import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { cn } from "@/lib/utils";
 import Providers from "@/components/Providers";
+import { Toaster } from "@/components/ui/sonner";
 
 const geist = Geist({subsets:['latin'],variable:'--font-sans'})
 
@@ -27,6 +28,7 @@ export default function RootLayout({
         <Providers>
         <ThemeProvider>{children}</ThemeProvider>
         </Providers>
+        <Toaster/>
       </body>
     </html>
   )

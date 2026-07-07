@@ -1,17 +1,19 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { AlertTriangle, Loader2 } from 'lucide-react';
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Website } from '@/lib/responses';
-
+} from "@/components/ui/dialog";
+import { Methods } from "@/lib/constants";
+import { useWebsiteMutation } from "@/lib/queries/websiteQueries";
+import { Website } from "@/lib/responses";
+import { AlertTriangle, Loader2 } from "lucide-react";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 export function DeleteWebsiteDialog({
   website,
@@ -23,15 +25,50 @@ export function DeleteWebsiteDialog({
   onOpenChange: (open: boolean) => void;
 }) {
   const [deleting, setDeleting] = useState(false);
-
+  const deleteWebsiteMutation = useWebsiteMutation();
   const onConfirm = async () => {
     setDeleting(true);
-    // UI-only — wire to delete mutation later
-    setTimeout(() => {
-      setDeleting(false);
-      onOpenChange(false);
-    }, 600);
+    deleteWebsiteMutation.mutate(
+      {
+        endpoint: `/${website?.id}`,
+        method: Methods.DELETE,
+      },
+      {
+        onSuccess: () => {
+          toast.success("Website deleted successfully");
+          setTimeout(() => {
+            setDeleting(false);
+            onOpenChange(false);
+          }, 600);
+        },
+        onError: () => {
+          toast.error("Failed to delete website", {
+            position: "top-center",
+            richColors: true,
+            classNames: { toast: "bg-red-500 text-white w-fit" },
+          });
+
+          setDeleting(false);
+          onOpenChange(false);
+        },
+      }
+    );
   };
+  useEffect(() => {
+    let toastId: string | number;
+    if (deleteWebsiteMutation.isPending) {
+      toastId = toast.loading("Deleting website...", {
+        position: "top-center",
+        richColors: true,
+        classNames: { toast: "bg-blue-500 text-white w-fit" },
+      });
+    }
+    return () => {
+      if (deleteWebsiteMutation.isPending) {
+        toast.dismiss(toastId);
+      }
+    };
+  }, [deleteWebsiteMutation.isPending]);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -44,7 +81,7 @@ export function DeleteWebsiteDialog({
             <div>
               <DialogTitle>Delete website</DialogTitle>
               <DialogDescription className="mt-1">
-                Are you sure you want to stop monitoring{' '}
+                Are you sure you want to stop monitoring{" "}
                 <span className="font-semibold text-ink-200">
                   {website?.description || website?.url}
                 </span>
@@ -69,11 +106,10 @@ export function DeleteWebsiteDialog({
             onClick={onConfirm}
             disabled={deleting}
           >
-            {deleting ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Delete'}
+            {deleting ? <Loader2 className="h-4 w-4 animate-spin" /> : "Delete"}
           </Button>
         </div>
       </DialogContent>
     </Dialog>
   );
 }
-

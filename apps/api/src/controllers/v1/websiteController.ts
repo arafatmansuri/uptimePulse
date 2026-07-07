@@ -141,6 +141,9 @@ export const deleteWebsite = asyncHandler(async (req, res) => {
   if (!website) {
     throw AppError.notFound("Website not found");
   }
+  await prisma.websiteTick.deleteMany({
+    where: { websiteId: websiteId },
+  });
   await prisma.website.delete({
     where: { id: websiteId, userId: userId },
   });
