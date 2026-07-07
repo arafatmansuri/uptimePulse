@@ -30,9 +30,9 @@ export type Website = {
 }
 
 export enum WebsiteStatus {
-  UP,
-  DOWN,
-  Unknown
+  UP="UP",
+  DOWN="DOWN",
+  Unknown="Unknown"
 }
 
 type Tick = {
