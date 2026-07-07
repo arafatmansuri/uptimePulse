@@ -90,3 +90,59 @@ export const getWebsites = asyncHandler(async (req, res) => {
     "Websites retrieved successfully",
   );
 });
+export const updateWebsite = asyncHandler(async (req, res) => {
+  const userId = req.user?.id;
+  if (!userId) {
+    throw AppError.unauthorized("User not authenticated");
+  }
+  const websiteId = req.params.id;
+  if (!websiteId || typeof websiteId !== "string") {
+    throw AppError.badRequest("Invalid website ID", { field: "id" });
+  }
+  const { url, description } = req.body;
+  const website = await prisma.website.findUnique({
+    where: { id: websiteId, userId: userId },
+  });
+  if (!website) {
+    throw AppError.notFound("Website not found");
+  }
+  if (url && url !== website.url) {
+    const isURLExists = await prisma.website.findFirst({
+      where: { url: url, userId: userId },
+    });
+    if (isURLExists) {
+      throw AppError.badRequest("Website with this URL already exists", {
+        field: ["url"],
+      });
+    }
+  }
+  const updatedWebsite = await prisma.website.update({
+    where: { id: websiteId, userId: userId },
+    data: { url, description },
+  });
+  ApiResponse.success(
+    res,
+    { website: updatedWebsite },
+    "Website updated successfully",
+  );
+});
+export const deleteWebsite = asyncHandler(async (req, res) => {
+  const userId = req.user?.id;
+  if (!userId) {
+    throw AppError.unauthorized("User not authenticated");
+  }
+  const websiteId = req.params.id;
+  if (!websiteId || typeof websiteId !== "string") {
+    throw AppError.badRequest("Invalid website ID", { field: "id" });
+  }
+  const website = await prisma.website.findUnique({
+    where: { id: websiteId, userId: userId },
+  });
+  if (!website) {
+    throw AppError.notFound("Website not found");
+  }
+  await prisma.website.delete({
+    where: { id: websiteId, userId: userId },
+  });
+  ApiResponse.success(res, {}, "Website deleted successfully");
+});
