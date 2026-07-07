@@ -23,7 +23,8 @@ import {
   Zap,
 } from "lucide-react";
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useMemo, useRef, useState } from "react";
 
 const statusConfig = {
   [WebsiteStatus.UP]: {
@@ -104,8 +105,25 @@ function WebsiteRow({
   onDelete: () => void;
 }) {
   const cfg = statusConfig[website.ticks[0].status];
+  const anchorRef = useRef<HTMLAnchorElement>(null);
+  const updateButtonRef = useRef<HTMLButtonElement>(null);
+  const deleteButtonRef = useRef<HTMLButtonElement>(null);
+  const navigate = useRouter();
+  const handleClick = (e: React.MouseEvent) => {
+    if (
+      anchorRef.current?.contains(e.target as Node) ||
+      updateButtonRef.current?.contains(e.target as Node) ||
+      deleteButtonRef.current?.contains(e.target as Node)
+    ) {
+      return;
+    }
+    navigate.push(`/website/${website.id}`);
+  };
   return (
-    <div className="group flex w-full items-center justify-between gap-4 border-b border-ink-800/60 px-5 py-4 transition last:border-b-0 hover:bg-ink-900/40">
+    <div
+      className="group flex w-full cursor-pointer items-center justify-between gap-4 border-b border-ink-800/60 px-5 py-4 transition last:border-b-0 hover:bg-ink-900/40"
+      onClick={handleClick}
+    >
       <div className="flex min-w-0 items-center gap-3">
         <span className={`h-2.5 w-2.5 shrink-0 rounded-full ${cfg.dot}`} />
         <div className="min-w-0">
@@ -115,6 +133,7 @@ function WebsiteRow({
           <div className="flex items-center gap-1.5 truncate text-xs text-ink-400">
             <Globe className="h-3 w-3 shrink-0" />
             <a
+              ref={anchorRef}
               href={website.url}
               target="_blank"
               rel="noopener noreferrer"
@@ -154,14 +173,16 @@ function WebsiteRow({
           {cfg.label}
         </Badge>
         <div className="flex items-center gap-1 transition md:opacity-0 md:group-hover:opacity-100">
-          <button
-            onClick={() => window.open(website.url, "_blank")}
+          <Link
+            href={`/website/${website.id}`}
+            // onClick={() => window.open(website.url, "_blank")}
             title="View website"
             className="grid h-8 w-8 place-items-center rounded-lg text-ink-400 transition hover:bg-ink-800 hover:text-white"
           >
             <ArrowUpRight className="h-4 w-4" />
-          </button>
+          </Link>
           <button
+            ref={updateButtonRef}
             onClick={onEdit}
             title="Edit"
             className="grid h-8 w-8 place-items-center rounded-lg text-ink-400 transition hover:bg-ink-800 hover:text-brand-300"
@@ -169,6 +190,7 @@ function WebsiteRow({
             <Pencil className="h-4 w-4" />
           </button>
           <button
+            ref={deleteButtonRef}
             onClick={onDelete}
             title="Delete"
             className="grid h-8 w-8 place-items-center rounded-lg text-ink-400 transition hover:bg-ink-800 hover:text-red-400"
@@ -209,10 +231,12 @@ export default function DashboardPage() {
     (w) => w.ticks[0].status === WebsiteStatus.UP
   ).length;
   const avgResponse =
-    websites.length > 0
+    websites.filter((w) => w.ticks[0].status === WebsiteStatus.UP).length > 0
       ? Math.round(
-          websites.reduce((sum, w) => sum + w.ticks[0].response_time_ms, 0) /
-            websites.length
+          websites
+            .filter((w) => w.ticks[0].status === WebsiteStatus.UP)
+            .reduce((sum, w) => sum + w.ticks[0].response_time_ms, 0) /
+            operational
         )
       : 0;
   const downCount = websites.filter(

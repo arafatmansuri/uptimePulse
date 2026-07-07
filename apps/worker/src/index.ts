@@ -41,7 +41,7 @@ const main = async () => {
     const res = await xReadGroup(CONSUMER_GROUP,WORKER_ID,{COUNT:5});
     if(!res || res.length === 0){
         console.log("No new messages");
-        await new Promise(resolve => setTimeout(resolve, 1000*5));
+        await new Promise(resolve => setTimeout(resolve, 1000*60));
         continue;
     }
     let websitesToTrack: GroupMessage[] = res[0]?.messages;

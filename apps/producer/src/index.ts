@@ -18,6 +18,6 @@ const main = async () => {
     console.log(`Added ${websites.length} websites to redis stream`);
 }
 
-setInterval(main, 1 * 60 * 1000);
+setInterval(main, 3 * 60 * 1000);
 
 main();
