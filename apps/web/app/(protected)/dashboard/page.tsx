@@ -1,13 +1,13 @@
-"use client"
+"use client";
 
-import { AddWebsiteDialog } from "@/components/dashboard/add-website-dialog"
-import { DeleteWebsiteDialog } from "@/components/dashboard/delete-website-dialog"
-import { EditWebsiteDialog } from "@/components/dashboard/edit-website-dialog"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { useAuthQuery } from "@/lib/queries/authQueries"
-import { useWebsiteQuery } from "@/lib/queries/websiteQueries"
-import { Website, WebsiteStatus } from "@/lib/responses"
+import { AddWebsiteDialog } from "@/components/dashboard/add-website-dialog";
+import { DeleteWebsiteDialog } from "@/components/dashboard/delete-website-dialog";
+import { EditWebsiteDialog } from "@/components/dashboard/edit-website-dialog";
+import { UserMenu } from "@/components/dashboard/user-menu";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { useWebsiteQuery } from "@/lib/queries/websiteQueries";
+import { Website, WebsiteStatus } from "@/lib/responses";
 import {
   Activity,
   ArrowUpRight,
@@ -21,10 +21,9 @@ import {
   Server,
   Trash2,
   Zap,
-} from "lucide-react"
-import Link from "next/link"
-import { useRouter } from "next/navigation"
-import { useEffect, useMemo, useState } from "react"
+} from "lucide-react";
+import Link from "next/link";
+import { useMemo, useState } from "react";
 
 const statusConfig = {
   [WebsiteStatus.UP]: {
@@ -45,14 +44,14 @@ const statusConfig = {
     text: "text-red-400",
     badge: "border-red-500/30 bg-red-500/10 text-red-400",
   },
-}
+};
 
 const statusFilters: { label: string; value: WebsiteStatus | "all" }[] = [
   { label: "All", value: "all" },
   { label: "Operational", value: WebsiteStatus.UP },
   { label: "Degraded", value: WebsiteStatus.Unknown },
   { label: "Down", value: WebsiteStatus.DOWN },
-]
+];
 
 const regions = [
   "All regions",
@@ -61,17 +60,17 @@ const regions = [
   "Asia Pacific",
   "South America",
   "Africa",
-]
+];
 
 function timeAgo(iso: string): string {
-  const diff = Date.now() - new Date(iso).getTime()
-  const seconds = Math.floor(diff / 1000)
-  if (seconds < 60) return `${seconds}s ago`
-  const minutes = Math.floor(seconds / 60)
-  if (minutes < 60) return `${minutes}m ago`
-  const hours = Math.floor(minutes / 60)
-  if (hours < 24) return `${hours}h ago`
-  return `${Math.floor(hours / 24)}d ago`
+  const diff = Date.now() - new Date(iso).getTime();
+  const seconds = Math.floor(diff / 1000);
+  if (seconds < 60) return `${seconds}s ago`;
+  const minutes = Math.floor(seconds / 60);
+  if (minutes < 60) return `${minutes}m ago`;
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `${hours}h ago`;
+  return `${Math.floor(hours / 24)}d ago`;
 }
 
 function StatCard({
@@ -80,10 +79,10 @@ function StatCard({
   value,
   tone,
 }: {
-  icon: typeof Activity
-  label: string
-  value: string
-  tone: string
+  icon: typeof Activity;
+  label: string;
+  value: string;
+  tone: string;
 }) {
   return (
     <div className="rounded-2xl border border-ink-800 bg-ink-900/40 p-5">
@@ -92,7 +91,7 @@ function StatCard({
       </div>
       <div className="mt-2 text-2xl font-bold text-white">{value}</div>
     </div>
-  )
+  );
 }
 
 function WebsiteRow({
@@ -100,13 +99,13 @@ function WebsiteRow({
   onEdit,
   onDelete,
 }: {
-  website: Website
-  onEdit: () => void
-  onDelete: () => void
+  website: Website;
+  onEdit: () => void;
+  onDelete: () => void;
 }) {
-  const cfg = statusConfig[website.ticks[0].status]
+  const cfg = statusConfig[website.ticks[0].status];
   return (
-    <div className="group flex items-center justify-between gap-4 border-b border-ink-800/60 px-5 py-4 transition last:border-b-0 hover:bg-ink-900/40 w-full">
+    <div className="group flex w-full items-center justify-between gap-4 border-b border-ink-800/60 px-5 py-4 transition last:border-b-0 hover:bg-ink-900/40">
       <div className="flex min-w-0 items-center gap-3">
         <span className={`h-2.5 w-2.5 shrink-0 rounded-full ${cfg.dot}`} />
         <div className="min-w-0">
@@ -115,7 +114,12 @@ function WebsiteRow({
           </div>
           <div className="flex items-center gap-1.5 truncate text-xs text-ink-400">
             <Globe className="h-3 w-3 shrink-0" />
-            <a href={website.url} target="_blank" rel="noopener noreferrer" className="truncate hover:underline">
+            <a
+              href={website.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="truncate hover:underline"
+            >
               {website.url}
             </a>
           </div>
@@ -149,7 +153,7 @@ function WebsiteRow({
         <Badge variant="outline" className={cfg.badge}>
           {cfg.label}
         </Badge>
-        <div className="flex items-center gap-1 md:opacity-0 transition md:group-hover:opacity-100">
+        <div className="flex items-center gap-1 transition md:opacity-0 md:group-hover:opacity-100">
           <button
             onClick={() => window.open(website.url, "_blank")}
             title="View website"
@@ -174,53 +178,46 @@ function WebsiteRow({
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 export default function DashboardPage() {
-  const [modalOpen, setModalOpen] = useState(false)
-  const [editTarget, setEditTarget] = useState<Website | null>(null)
-  const [deleteTarget, setDeleteTarget] = useState<Website | null>(null)
-  const [search, setSearch] = useState("")
-  const [statusFilter, setStatusFilter] = useState<WebsiteStatus | "all">("all")
-  const [regionFilter, setRegionFilter] = useState("All regions")
+  const [modalOpen, setModalOpen] = useState(false);
+  const [editTarget, setEditTarget] = useState<Website | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<Website | null>(null);
+  const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState<WebsiteStatus | "all">(
+    "all"
+  );
+  const [regionFilter, setRegionFilter] = useState("All regions");
   const { data, isLoading, isError, refetch, isFetching, error } =
-    useWebsiteQuery({ endpoint: "/" })
-  const { isLoading: isAuthLoading, isError: isAuthError } = useAuthQuery({
-    endpoint: "/me",
-  })
-  const navigate = useRouter()
-  useEffect(() => {
-    if (!isAuthLoading && isAuthError) {
-      navigate.push("/signin")
-    }
-  }, [isAuthLoading, isAuthError])
-  const websites = data?.data.websites ?? []
+    useWebsiteQuery({ endpoint: "/" });
+  const websites = data?.data.websites ?? [];
   const filtered = useMemo(() => {
     return websites.filter((w) => {
       const matchesSearch =
         !search ||
         (w.description &&
           w.description.toLowerCase().includes(search.toLowerCase())) ||
-        w.url.toLowerCase().includes(search.toLowerCase())
+        w.url.toLowerCase().includes(search.toLowerCase());
       const matchesStatus =
-        statusFilter === "all" || w.ticks[0].status === statusFilter
-      return matchesSearch && matchesStatus
-    })
-  }, [search, statusFilter,websites])
+        statusFilter === "all" || w.ticks[0].status === statusFilter;
+      return matchesSearch && matchesStatus;
+    });
+  }, [search, statusFilter, websites]);
   const operational = websites.filter(
     (w) => w.ticks[0].status === WebsiteStatus.UP
-  ).length
+  ).length;
   const avgResponse =
     websites.length > 0
       ? Math.round(
           websites.reduce((sum, w) => sum + w.ticks[0].response_time_ms, 0) /
             websites.length
         )
-      : 0
+      : 0;
   const downCount = websites.filter(
     (w) => w.ticks[0].status === WebsiteStatus.DOWN
-  ).length
+  ).length;
   return (
     <div className="min-h-screen bg-ink-950 text-ink-100">
       {/* Top bar */}
@@ -249,6 +246,7 @@ export default function DashboardPage() {
             <Button size="sm" onClick={() => setModalOpen(true)}>
               <Plus className="h-4 w-4" /> Add website
             </Button>
+            <UserMenu />
           </div>
         </div>
       </header>
@@ -321,7 +319,7 @@ export default function DashboardPage() {
           </div>
 
           {/* Region filter */}
-          <div className="relative flex justify-between items-center">
+          <div className="relative flex items-center justify-between">
             <select
               value={regionFilter}
               onChange={(e) => setRegionFilter(e.target.value)}
@@ -415,5 +413,5 @@ export default function DashboardPage() {
         onOpenChange={(open) => !open && setDeleteTarget(null)}
       />
     </div>
-  )
+  );
 }

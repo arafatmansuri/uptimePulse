@@ -41,8 +41,8 @@ export function SignUpForm() {
         setServerError(error.message);
       },
       onSuccess(data) {
-        console.log("success",data);
         setSignupSuccessMessage(data.message);
+        localStorage.setItem("user", JSON.stringify(data.data.user));
         navigate.push('/dashboard');
       },
       onSettled() {

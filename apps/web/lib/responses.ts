@@ -9,14 +9,11 @@ export type ApiErrorResponse = {
     success: boolean;
 }
 
-type User = {
-    user:{
+export type User = {
         id: string;
         email: string;
         name: string;
         password?: string;
-    }
-    token?: string;
 }
 
 
@@ -49,6 +46,6 @@ type Region = {
   name: string;
 }
 
-export type AuthResponse = ApiResponse<User>;
-export type WebsiteResponse = ApiResponse<{website:Website}>;
+export type AuthResponse = ApiResponse<{ user: User; token?: string }>
+export type WebsiteResponse = ApiResponse<{website: Website}>;
 export type WebsitesResponse = ApiResponse<{websites: Website[]}>;

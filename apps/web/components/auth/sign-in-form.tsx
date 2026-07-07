@@ -34,6 +34,7 @@ export function SignInForm() {
       onSuccess(data){
         setServerError(null);
         setSigninSuccessMessage(data.message);
+        localStorage.setItem("user", JSON.stringify(data.data.user));
         navigate.push('/dashboard');
       },
       onSettled() {
