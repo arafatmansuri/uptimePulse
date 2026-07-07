@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { getuser, signIn, signUp } from "../../controllers/v1/userController";
+import { getuser, signIn, signOut, signUp } from "../../controllers/v1/userController";
 import { userMiddleware } from "../../middlewares/userMiddleware";
 
 const usersRouter = Router();
@@ -9,5 +9,6 @@ usersRouter.post("/signin", signIn);
 
 usersRouter.use(userMiddleware);
 usersRouter.get("/me", getuser);
+usersRouter.post("/signout", signOut);
 
 export default usersRouter;

@@ -13,7 +13,6 @@ export const getUsers = asyncHandler(async (req, res) => {
   const users = await prisma.user.findMany();
   ApiResponse.success(res, { users }, "Users retrieved successfully");
 });
-
 export const signUp = asyncHandler(async (req, res) => {
   const parsedSignupData = signUpSchema.safeParse(req.body);
 
@@ -145,4 +144,31 @@ export const getuser = asyncHandler(async (req, res) => {
     throw AppError.unauthorized("User not authenticated");
   }
   ApiResponse.success(res, { user }, "User retrieved successfully");
+});
+export const signOut = asyncHandler(async (req, res) => {
+  const user = req.user;
+  if (!user) {
+    throw AppError.unauthorized("User not authenticated");
+  }
+  await prisma.user.update({
+    where: { id: user.id },
+    data: { refreshToken: null },
+  });
+  res.clearCookie("access_token", {
+    httpOnly: true,
+    secure: true,
+    sameSite: "none",
+    path: "/",
+  });
+  res.clearCookie("refresh_token", {
+    httpOnly: true,
+    secure: true,
+    sameSite: "none", 
+    path: "/",
+  });
+  ApiResponse.success(
+    res,
+    {},
+    "User signed out successfully"
+  );
 });
