@@ -7,6 +7,7 @@ type ApiResponse<T> = {
 export type ApiErrorResponse = {
     message: string;
     success: boolean;
+    status: number;
 }
 
 export type User = {

@@ -29,7 +29,6 @@ export function UserMenu() {
     if (storedUser) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setUser(JSON.parse(storedUser));
-      console.log("user", JSON.parse(storedUser));
     }
     //   }
   }, []);

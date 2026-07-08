@@ -24,7 +24,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 
 const statusConfig = {
@@ -218,8 +218,8 @@ export default function DashboardPage() {
   const [statusFilter, setStatusFilter] = useState<WebsiteStatus | "all">(
     "all"
   );
-  const [regionFilter, setRegionFilter] = useState("All regions");
-  const { data, isLoading, isError, refetch, isFetching, error } =
+  // const [regionFilter, setRegionFilter] = useState("All regions");
+  const { data, isLoading, isError, refetch,isFetched, isFetching, error } =
     useWebsiteQuery({ endpoint: "/" });
   const websites = data?.data.websites ?? [];
   const filtered = useMemo(() => {
@@ -249,6 +249,11 @@ export default function DashboardPage() {
   const downCount = websites.filter(
     (w) => w.ticks[0].status === WebsiteStatus.DOWN
   ).length;
+  useEffect(() => {
+    if (isFetched && !isFetching) {
+      toast.success("Websites loaded successfully");
+    }
+  }, [isFetched, isFetching]);
   return (
     <div
       className="min-h-screen bg-ink-950 text-ink-100"
@@ -360,7 +365,7 @@ export default function DashboardPage() {
           </div>
 
           {/* Region filter */}
-          <div className="relative flex items-center justify-between">
+          {/* <div className="relative flex items-center justify-between">
             <select
               value={regionFilter}
               onChange={(e) => setRegionFilter(e.target.value)}
@@ -375,7 +380,7 @@ export default function DashboardPage() {
             <span className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-xs text-ink-500">
               ▼
             </span>
-          </div>
+          </div> */}
         </div>
 
         {/* Website list */}
