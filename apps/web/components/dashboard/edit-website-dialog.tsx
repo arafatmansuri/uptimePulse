@@ -67,10 +67,9 @@ export function EditWebsiteDialog({
             onOpenChange(false);
           }, 600);
         },
-        onError: () => {
-          toast.error("Failed to update website");
+        onError: (error) => {
+          setServerError(error.message);
           setSaving(false);
-          onOpenChange(false);
         },
       }
     );

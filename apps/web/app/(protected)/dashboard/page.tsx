@@ -253,7 +253,7 @@ export default function DashboardPage() {
     <div
       className="min-h-screen bg-ink-950 text-ink-100"
       onKeyDown={(e) => {
-        console.log("Key pressed:", e.key, "Ctrl:", e.ctrlKey);
+        // console.log("Key pressed:", e.key, "Ctrl:", e.ctrlKey);
         if (e.ctrlKey && e.key === "Enter") {
           // e.preventDefault();
           toast.success("Ctrl+Enter pressed, opening Add Website dialog");
