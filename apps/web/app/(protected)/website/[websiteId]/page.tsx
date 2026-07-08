@@ -13,16 +13,16 @@ import {
   Activity,
   ArrowLeft,
   ArrowUpRight,
-//   Bell,
+  //   Bell,
   CheckCircle2,
   Clock,
   Globe,
   HelpCircle,
   Loader2,
-//   Mail,
-//   MapPin,
+  //   Mail,
+  //   MapPin,
   Pencil,
-//   Plus,
+  //   Plus,
   RefreshCw,
   Server,
   Trash2,
@@ -79,21 +79,21 @@ export default function WebsiteDetailPage() {
 
   const [editOpen, setEditOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
-//   const [newAlertEmail, setNewAlertEmail] = useState("");
-//   const [newRegionId, setNewRegionId] = useState("");
-//   const [emailAlerts, setEmailAlerts] = useState<
-//     { id: string; email: string }[]
-//   >([]);
-//   const [regions, setRegions] = useState<
-//     { id: string; name: string; city: string }[]
-//   >([]);
+  //   const [newAlertEmail, setNewAlertEmail] = useState("");
+  //   const [newRegionId, setNewRegionId] = useState("");
+  //   const [emailAlerts, setEmailAlerts] = useState<
+  //     { id: string; email: string }[]
+  //   >([]);
+  //   const [regions, setRegions] = useState<
+  //     { id: string; name: string; city: string }[]
+  //   >([]);
 
   const { data, isLoading, isError, error, refetch, isFetching } =
     useWebsiteQuery({
-      endpoint: `/websites/${websiteId}`,
+      endpoint: `/${websiteId}`,
     });
 
-  const website: Website | null = data?.data?.websites?.[0] ?? null;
+  const website: Website | null = data?.data?.website ?? null;
   const ticks = website?.ticks ?? [];
 
   const stats = useMemo(() => {
@@ -120,38 +120,38 @@ export default function WebsiteDetailPage() {
     };
   }, [website?.ticks]);
 
-//   const recentTicks = useMemo(() => [...ticks].reverse(), [ticks]);
-//   const recentTicks = useMemo(() => [...ticks].reverse().slice(0, 12), [ticks]);
+  //   const recentTicks = useMemo(() => [...ticks].reverse(), [ticks]);
+  //   const recentTicks = useMemo(() => [...ticks].reverse().slice(0, 12), [ticks]);
 
-//   const handleAddAlert = () => {
-//     if (!newAlertEmail.trim()) return;
-//     setEmailAlerts((prev) => [
-//       ...prev,
-//       { id: crypto.randomUUID(), email: newAlertEmail.trim() },
-//     ]);
-//     setNewAlertEmail("");
-//   };
+  //   const handleAddAlert = () => {
+  //     if (!newAlertEmail.trim()) return;
+  //     setEmailAlerts((prev) => [
+  //       ...prev,
+  //       { id: crypto.randomUUID(), email: newAlertEmail.trim() },
+  //     ]);
+  //     setNewAlertEmail("");
+  //   };
 
-//   const handleRemoveAlert = (id: string) => {
-//     setEmailAlerts((prev) => prev.filter((a) => a.id !== id));
-//   };
+  //   const handleRemoveAlert = (id: string) => {
+  //     setEmailAlerts((prev) => prev.filter((a) => a.id !== id));
+  //   };
 
-//   const handleAddRegion = () => {
-//     if (!newRegionId.trim()) return;
-//     setRegions((prev) => [
-//       ...prev,
-//       {
-//         id: newRegionId.trim(),
-//         name: newRegionId.trim(),
-//         city: newRegionId.trim(),
-//       },
-//     ]);
-//     setNewRegionId("");
-//   };
+  //   const handleAddRegion = () => {
+  //     if (!newRegionId.trim()) return;
+  //     setRegions((prev) => [
+  //       ...prev,
+  //       {
+  //         id: newRegionId.trim(),
+  //         name: newRegionId.trim(),
+  //         city: newRegionId.trim(),
+  //       },
+  //     ]);
+  //     setNewRegionId("");
+  //   };
 
-//   const handleRemoveRegion = (id: string) => {
-//     setRegions((prev) => prev.filter((r) => r.id !== id));
-//   };
+  //   const handleRemoveRegion = (id: string) => {
+  //     setRegions((prev) => prev.filter((r) => r.id !== id));
+  //   };
 
   if (isLoading) {
     return (

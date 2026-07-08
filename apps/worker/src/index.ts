@@ -39,7 +39,7 @@ async function trackWebsites(websiteToTrack: GroupMessage) {
 const main = async () => {
     while(1){
     const res = await xReadGroup(CONSUMER_GROUP,WORKER_ID,{COUNT:5});
-    if(!res || res.length === 0){
+    if(!res || res[0].messages.length === 0){
         console.log("No new messages");
         await new Promise(resolve => setTimeout(resolve, 1000*60));
         continue;
