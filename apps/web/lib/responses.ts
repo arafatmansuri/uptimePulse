@@ -26,6 +26,18 @@ export type Website = {
     timeAdded: Date;
     ticks: Tick[];
 }
+export type WebsiteDetails = {
+    id: string;
+    url: string;
+    status: WebsiteStatus;
+    responseTime: number;
+    uptimePercentage: number;
+    lastChecked: string;
+    description?: string;
+    userId: string;
+    timeAdded: Date;
+    ticks: Tick[];
+}
 
 export enum WebsiteStatus {
   UP="UP",
@@ -33,7 +45,7 @@ export enum WebsiteStatus {
   Unknown="Unknown"
 }
 
-type Tick = {
+export type Tick = {
     id: string;
     response_time_ms: number;
     status: WebsiteStatus;
@@ -42,7 +54,7 @@ type Tick = {
     createdAt: Date;
 }
 
-type Region = {
+export type Region = {
   id: string;
   name: string;
 }

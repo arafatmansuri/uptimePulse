@@ -78,7 +78,7 @@ export default function SettingsPage() {
           <p className="mt-1 text-sm text-ink-400">Update your personal information.</p>
 
           <div className="mt-5 flex items-center gap-4">
-            <span className="grid h-16 w-16 place-items-center rounded-2xl bg-gradient-to-br from-brand-500 to-brand-600 text-xl font-bold text-ink-950">
+            <span className="grid h-16 w-16 place-items-center rounded-2xl bg-linear-to-br from-brand-500 to-brand-600 text-xl font-bold text-ink-950">
               {user?.name
                 ?.trim()
                 .split(/\s+/)
