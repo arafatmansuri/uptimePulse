@@ -1,5 +1,7 @@
 "use client";
 
+import { Methods } from "@/lib/constants";
+import { useAuthMutation } from "@/lib/queries/authQueries";
 import { User as UserType } from "@/lib/responses";
 import {
   ChevronDown,
@@ -22,15 +24,13 @@ export function UserMenu() {
   const [signingOut, setSigningOut] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const [user, setUser] = useState<UserType | null>(null);
-  // setUser(JSON.parse(localStorage.getItem("user")));
+  const signOutMutation = useAuthMutation();
   useEffect(() => {
-    //   if (typeof window !== "undefined") {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setUser(JSON.parse(storedUser));
     }
-    //   }
   }, []);
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
@@ -44,8 +44,17 @@ export function UserMenu() {
 
   const handleSignOut = async () => {
     setSigningOut(true);
-    // await supabase.auth.signOut();
-    window.location.href = "/signin";
+    signOutMutation.mutate({endpoint:"/signout", method: Methods.POST}, {
+      onSuccess: () => {
+        localStorage.removeItem("user");
+        window.location.href = "/signin";
+      },
+      onError: () => {
+        localStorage.removeItem("user");
+        setSigningOut(true);
+        window.location.href = "/signin";
+      },
+    });
   };
 
   return (
