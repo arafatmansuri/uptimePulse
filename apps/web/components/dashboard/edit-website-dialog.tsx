@@ -1,19 +1,22 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { Globe, Loader2 } from 'lucide-react';
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { addWebsiteSchema, type AddWebsiteValues} from '@/lib/schemas';
-import { Website } from '@/lib/responses';
+} from "@/components/ui/dialog";
+import { Methods } from "@/lib/constants";
+import { useWebsiteMutation } from "@/lib/queries/websiteQueries";
+import { Website } from "@/lib/responses";
+import { addWebsiteSchema, type AddWebsiteValues } from "@/lib/schemas";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Globe, Loader2 } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 export function EditWebsiteDialog({
   website,
@@ -26,7 +29,7 @@ export function EditWebsiteDialog({
 }) {
   const [serverError, setServerError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
-
+  const updateWebsiteMutation = useWebsiteMutation();
   const {
     register,
     handleSubmit,
@@ -34,7 +37,7 @@ export function EditWebsiteDialog({
     formState: { errors },
   } = useForm<AddWebsiteValues>({
     resolver: zodResolver(addWebsiteSchema),
-    defaultValues: { description: '', url: ''},
+    defaultValues: { description: "", url: "" },
   });
 
   useEffect(() => {
@@ -47,16 +50,44 @@ export function EditWebsiteDialog({
     }
   }, [website, open, reset]);
 
-
   const onSubmit = async (values: AddWebsiteValues) => {
     setServerError(null);
     setSaving(true);
-    // UI-only — wire to update mutation later
-    setTimeout(() => {
-      setSaving(false);
-      onOpenChange(false);
-    }, 600);
+    updateWebsiteMutation.mutate(
+      {
+        endpoint: `/${website?.id}`,
+        method: Methods.UPDATE,
+        data: values,
+      },
+      {
+        onSuccess: () => {
+          toast.success("Website updated successfully");
+          setTimeout(() => {
+            setSaving(false);
+            onOpenChange(false);
+          }, 600);
+        },
+        onError: () => {
+          toast.error("Failed to update website");
+          setSaving(false);
+          onOpenChange(false);
+        },
+      }
+    );
   };
+  useEffect(() => {
+    let toastId: string | number;
+    if (updateWebsiteMutation.isPending) {
+      toastId = toast.loading("Updating website...", {
+        style: { backgroundColor: "#1f2937", color: "#fff" },
+      });
+    }
+    return () => {
+      if (updateWebsiteMutation.isPending) {
+        toast.dismiss(toastId);
+      }
+    };
+  }, [updateWebsiteMutation.isPending]);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -141,6 +172,5 @@ export function EditWebsiteDialog({
         </form>
       </DialogContent>
     </Dialog>
-  )
+  );
 }
-

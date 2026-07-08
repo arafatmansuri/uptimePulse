@@ -8,7 +8,7 @@ async function websiteRequest<T>({endpoint,data,method}:WebsiteRequestData): Pro
     try {
         const res = await axios({
         data:data,
-        method: Methods[method || Methods.POST],
+        method: method || Methods.POST,
         url: `${BACKEND_URL}/websites${endpoint}`,
         withCredentials:true
         })
