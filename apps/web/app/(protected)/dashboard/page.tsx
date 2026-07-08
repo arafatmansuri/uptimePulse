@@ -25,6 +25,7 @@ import {
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useMemo, useRef, useState } from "react";
+import { toast } from "sonner";
 
 const statusConfig = {
   [WebsiteStatus.UP]: {
@@ -162,8 +163,14 @@ function WebsiteRow({
         <div className="text-right">
           <div className="text-xs text-ink-500">Last checked</div>
           <div className="flex items-center gap-1 text-sm font-medium text-ink-200">
-            <Clock className="h-3 w-3 text-ink-500" />
-            {timeAgo(new Date(website.ticks[0].createdAt).toISOString())}
+            {website.ticks[0].status == WebsiteStatus.Unknown ? (
+              <div>Unknown</div>
+            ) : (
+              <div>
+                <Clock className="h-3 w-3 text-green-400" />
+                {timeAgo(new Date(website.ticks[0].createdAt).toISOString())}
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -243,7 +250,17 @@ export default function DashboardPage() {
     (w) => w.ticks[0].status === WebsiteStatus.DOWN
   ).length;
   return (
-    <div className="min-h-screen bg-ink-950 text-ink-100">
+    <div
+      className="min-h-screen bg-ink-950 text-ink-100"
+      onKeyDown={(e) => {
+        console.log("Key pressed:", e.key, "Ctrl:", e.ctrlKey);
+        if (e.ctrlKey && e.key === "Enter") {
+          // e.preventDefault();
+          toast.success("Ctrl+Enter pressed, opening Add Website dialog");
+          setModalOpen(true);
+        }
+      }}
+    >
       {/* Top bar */}
       <header className="sticky top-0 z-40 border-b border-ink-800/80 bg-ink-950/80 backdrop-blur-xl">
         <div className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between px-5 sm:px-8">

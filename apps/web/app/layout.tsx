@@ -28,7 +28,7 @@ export default function RootLayout({
         <Providers>
         <ThemeProvider>{children}</ThemeProvider>
         </Providers>
-        <Toaster/>
+        <Toaster position="bottom-center" richColors className="w-fit text-white" duration={3000} swipeDirections={["right"]}/>
       </body>
     </html>
   )

@@ -42,12 +42,7 @@ export function DeleteWebsiteDialog({
           }, 600);
         },
         onError: () => {
-          toast.error("Failed to delete website", {
-            position: "top-center",
-            richColors: true,
-            classNames: { toast: "bg-red-500 text-white w-fit" },
-          });
-
+          toast.error("Failed to delete website");
           setDeleting(false);
           onOpenChange(false);
         },
@@ -58,9 +53,7 @@ export function DeleteWebsiteDialog({
     let toastId: string | number;
     if (deleteWebsiteMutation.isPending) {
       toastId = toast.loading("Deleting website...", {
-        position: "top-center",
-        richColors: true,
-        classNames: { toast: "bg-blue-500 text-white w-fit" },
+        style: { backgroundColor: "#1f2937", color: "#fff" },
       });
     }
     return () => {
