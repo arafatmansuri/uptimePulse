@@ -7,7 +7,7 @@ import { UserMenu } from "@/components/dashboard/user-menu";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useWebsiteQuery } from "@/lib/queries/websiteQueries";
-import { Website, WebsiteStatus } from "@/lib/responses";
+import { Website, WebsitesResponse, WebsiteStatus } from "@/lib/responses";
 import {
   Activity,
   ArrowUpRight,
@@ -180,14 +180,14 @@ function WebsiteRow({
           {cfg.label}
         </Badge>
         <div className="flex items-center gap-1 transition md:opacity-0 md:group-hover:opacity-100">
-          <Link
-            href={`/website/${website.id}`}
-            // onClick={() => window.open(website.url, "_blank")}
+          <Button
+            // href={`/website/${website.id}`}
+            onClick={() => navigate.push(`/website/${website.id}`)}
             title="View website"
-            className="grid h-8 w-8 place-items-center rounded-lg text-ink-400 transition hover:bg-ink-800 hover:text-white"
+            className="grid h-8 w-8 place-items-center rounded-lg text-ink-400 transition hover:bg-ink-800 hover:text-white bg-ink-900/60"
           >
             <ArrowUpRight className="h-4 w-4" />
-          </Link>
+          </Button>
           <button
             ref={updateButtonRef}
             onClick={onEdit}
@@ -220,7 +220,7 @@ export default function DashboardPage() {
   );
   // const [regionFilter, setRegionFilter] = useState("All regions");
   const { data, isLoading, isError, refetch,isFetched, isFetching, error } =
-    useWebsiteQuery({ endpoint: "/" });
+    useWebsiteQuery<WebsitesResponse>({ endpoint: "/" });
   const websites = data?.data.websites ?? [];
   const filtered = useMemo(() => {
     return websites.filter((w) => {

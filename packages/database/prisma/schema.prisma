@@ -40,6 +40,7 @@ model websiteTick {
   regionId String
   region region @relation(fields: [regionId], references: [id])
   createdAt DateTime @default(now())
+  isTempTick Boolean @default(false)
 }
 model region {
   id   String @id @default(uuid())

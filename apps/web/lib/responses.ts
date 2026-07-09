@@ -52,6 +52,7 @@ export type Tick = {
     websiteId: string;
     regionId: string;
     createdAt: Date;
+    isTempTick: boolean;
 }
 
 export type Region = {

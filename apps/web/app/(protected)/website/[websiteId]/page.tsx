@@ -8,7 +8,7 @@ import { UserMenu } from "@/components/dashboard/user-menu";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useWebsiteQuery } from "@/lib/queries/websiteQueries";
-import { Website, WebsiteStatus } from "@/lib/responses";
+import { Website, WebsiteResponse, WebsiteStatus } from "@/lib/responses";
 import {
   Activity,
   ArrowLeft,
@@ -76,7 +76,6 @@ export default function WebsiteDetailPage() {
   const params = useParams();
   const router = useRouter();
   const websiteId = params.websiteId as string;
-
   const [editOpen, setEditOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
   //   const [newAlertEmail, setNewAlertEmail] = useState("");
@@ -89,10 +88,9 @@ export default function WebsiteDetailPage() {
   //   >([]);
 
   const { data, isLoading, isError, error, refetch, isFetching } =
-    useWebsiteQuery({
+    useWebsiteQuery<WebsiteResponse>({
       endpoint: `/${websiteId}`,
     });
-
   const website: Website | null = data?.data?.website ?? null;
   const ticks = website?.ticks ?? [];
 
@@ -109,10 +107,10 @@ export default function WebsiteDetailPage() {
     const up = ticks.filter((t) => t.status === WebsiteStatus.UP).length;
     const down = ticks.filter((t) => t.status === WebsiteStatus.DOWN).length;
     const avg = Math.round(
-      ticks.reduce((s, t) => s + t.response_time_ms, 0) / ticks.length
+      ticks.reduce((s, t) => s + t.response_time_ms, 0) / (ticks.length)
     );
     return {
-      uptime: ((up / ticks.length) * 100).toFixed(1) + "%",
+      uptime: ((up / (ticks.length)) * 100).toFixed(1) + "%",
       avgResponse: avg,
       upCount: up,
       downCount: down,
@@ -153,7 +151,7 @@ export default function WebsiteDetailPage() {
   //     setRegions((prev) => prev.filter((r) => r.id !== id));
   //   };
 
-  if (isLoading) {
+  if (isLoading || !website) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-ink-950 text-ink-400">
         <Loader2 className="h-6 w-6 animate-spin" />
@@ -161,11 +159,11 @@ export default function WebsiteDetailPage() {
     );
   }
 
-  if (isError || !website) {
+  if (isError) {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center gap-3 bg-ink-950 text-center">
         <p className="text-sm text-red-400">
-          {(error as unknown as Error)?.message || "Failed to load website."}
+          {error?.message || "Failed to load website."}
         </p>
         <Button variant="outline" onClick={() => router.push("/dashboard")}>
           Back to dashboard

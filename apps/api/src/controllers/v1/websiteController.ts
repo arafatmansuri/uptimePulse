@@ -72,6 +72,7 @@ export const getWebsites = asyncHandler(async (req, res) => {
   if (!userId) {
     throw AppError.unauthorized("User not authenticated");
   }
+  await prisma.websiteTick.deleteMany({ where: { isTempTick: true } });
   const websites = await prisma.website.findMany({
     where: { userId: userId },
     include: {

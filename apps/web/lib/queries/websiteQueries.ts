@@ -61,10 +61,10 @@ export const useWebsiteMutation = () => {
     },
   });
 };
-export const useWebsiteQuery = ({ endpoint }: WebsiteRequestData) => {
-  return useQuery<WebsitesResponse, ApiErrorResponse>({
-    queryFn: async (): Promise<WebsitesResponse> =>
-      await websiteRequest<WebsitesResponse>({ method: Methods.GET, endpoint }),
+export const useWebsiteQuery = <T extends WebsitesResponse | WebsiteResponse>({ endpoint }: WebsiteRequestData) => {
+  return useQuery<T, ApiErrorResponse>({
+    queryFn: async (): Promise<T> =>
+      await websiteRequest<T>({ method: Methods.GET, endpoint }),
     queryKey: ["websiteQuery"],
     throwOnError(error) {
       if (error.status === 401) {
