@@ -93,6 +93,10 @@ export default function WebsiteDetailPage() {
     });
   const website: Website | null = data?.data?.website ?? null;
   const ticks = website?.ticks ?? [];
+  const ticksCount = website?.tickCount ?? 0;
+  const up = website?.upCount ?? 0;
+  const down = website?.downCount ?? 0;
+  const avgResponseTime = website?.avgResponseTime ?? 0;
 
   const stats = useMemo(() => {
     const ticks = website?.ticks ?? [];
@@ -104,14 +108,9 @@ export default function WebsiteDetailPage() {
         downCount: 0,
         lastCheck: null,
       };
-    const up = ticks.filter((t) => t.status === WebsiteStatus.UP).length;
-    const down = ticks.filter((t) => t.status === WebsiteStatus.DOWN).length;
-    const avg = Math.round(
-      ticks.reduce((s, t) => s + t.response_time_ms, 0) / (ticks.length)
-    );
     return {
-      uptime: ((up / (ticks.length)) * 100).toFixed(1) + "%",
-      avgResponse: avg,
+      uptime: ((up / (ticksCount)) * 100).toFixed(1) + "%",
+      avgResponse: avgResponseTime.toFixed(0),
       upCount: up,
       downCount: down,
       lastCheck: ticks[ticks.length - 1].createdAt,
@@ -235,7 +234,7 @@ export default function WebsiteDetailPage() {
                   {timeAgo(new Date(website.timeAdded).toISOString())}
                 </span>
                 <span className="flex items-center gap-1">
-                  <Server className="h-3 w-3" /> {ticks.length} checks
+                  <Server className="h-3 w-3" /> {ticksCount} checks
                 </span>
               </div>
             </div>
@@ -477,42 +476,12 @@ export default function WebsiteDetailPage() {
       </main>
 
       <EditWebsiteDialog
-        website={
-          website
-            ? {
-                id: website.id,
-                description: website.description,
-                url: website.url,
-                // status: WebsiteStatus.UP,
-                // responseTime: stats.avgResponse,
-                // lastChecked: stats.lastCheck ?? new Date().toISOString(),
-                // uptimePercentage: stats.uptime,
-                timeAdded: website.timeAdded,
-                userId: website.userId,
-                ticks: website.ticks,
-              }
-            : null
-        }
+        website={website}
         open={editOpen}
         onOpenChange={setEditOpen}
       />
       <DeleteWebsiteDialog
-        website={
-          website
-            ? {
-                id: website.id,
-                description: website.description,
-                url: website.url,
-                // status: WebsiteStatus.UP,
-                // responseTime: stats.avgResponse,
-                // lastChecked: stats.lastCheck ?? new Date().toISOString(),
-                // uptimePercentage: stats.uptime,
-                timeAdded: website.timeAdded,
-                userId: website.userId,
-                ticks: website.ticks,
-              }
-            : null
-        }
+        website={website}
         open={deleteOpen}
         onOpenChange={setDeleteOpen}
       />

@@ -1,4 +1,4 @@
-import { prisma } from "@repo/db";
+import { prisma, websiteStatus } from "@repo/db";
 import { ApiResponse } from "../../lib/ApiResponse";
 import { AppError } from "../../lib/AppError";
 import { asyncHandler } from "../../lib/asyncHandler";
@@ -65,7 +65,24 @@ export const getWebsiteStatus = asyncHandler(async (req, res) => {
   if (!website) {
     throw AppError.notFound("Website not found");
   }
-  ApiResponse.success(res, { website }, "Website retrieved successfully");
+  const tickCount = await prisma.websiteTick.count({
+    where: { websiteId: req.params.id },
+  });
+  const upCount = await prisma.websiteTick.count({
+    where: { websiteId: req.params.id, status: websiteStatus.UP },
+  });
+  const downCount = await prisma.websiteTick.count({
+    where: { websiteId: req.params.id, status: websiteStatus.DOWN },
+  });
+  const avgResponseTime = await prisma.websiteTick.aggregate({
+    where: { websiteId: req.params.id },
+    _avg: { response_time_ms: true },
+  });
+  ApiResponse.success(
+    res,
+    { website, tickCount, upCount, downCount, avgResponseTime },
+    "Website retrieved successfully",
+  );
 });
 export const getWebsites = asyncHandler(async (req, res) => {
   const userId = req.user?.id;

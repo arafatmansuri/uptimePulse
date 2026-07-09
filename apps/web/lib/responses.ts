@@ -19,13 +19,17 @@ export type User = {
 
 
 export type Website = {
-    id: string;
-    url: string;
-    description?: string;
-    userId: string;
-    timeAdded: Date;
-    ticks: Tick[];
-}
+  id: string;
+  url: string;
+  description?: string;
+  userId: string;
+  timeAdded: Date;
+  ticks: Tick[];
+  tickCount: number;
+  upCount: number;
+  downCount: number;
+  avgResponseTime: number;
+};
 export type WebsiteDetails = {
     id: string;
     url: string;
@@ -37,6 +41,9 @@ export type WebsiteDetails = {
     userId: string;
     timeAdded: Date;
     ticks: Tick[];
+    _count:{
+        ticks: number;
+    }
 }
 
 export enum WebsiteStatus {
