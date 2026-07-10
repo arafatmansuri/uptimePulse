@@ -6,7 +6,7 @@ import { useAuthMutation } from "@/lib/queries/authQueries";
 import { updateProfileSchema, UpdateProfileValues } from "@/lib/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2, Mail, Save, User, UserIcon } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
 export function UpdateProfileForm({ email, name }: UpdateProfileValues) {
@@ -17,6 +17,7 @@ export function UpdateProfileForm({ email, name }: UpdateProfileValues) {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<UpdateProfileValues>({
     resolver: zodResolver(updateProfileSchema),
@@ -24,6 +25,15 @@ export function UpdateProfileForm({ email, name }: UpdateProfileValues) {
   });
   const authMutation = useAuthMutation();
 
+  useEffect(() => {
+    if (name && email) {
+      reset({
+        name: name,
+        email: email,
+      });
+      // setServerError(null);
+    }
+  }, [reset, name, email]);
   const onSubmit = async (values: UpdateProfileValues) => {
     setServerError(null);
     setLoading(true);
@@ -102,7 +112,7 @@ export function UpdateProfileForm({ email, name }: UpdateProfileValues) {
               type="text"
               autoComplete="name"
               placeholder="Jane Doe"
-              {...(register("name"))}
+              {...register("name")}
               className="w-full rounded-xl border border-ink-700 bg-ink-900/60 py-3 pr-3 pl-10 text-sm text-white transition outline-none placeholder:text-ink-500 focus:border-brand-500/60 focus:ring-2 focus:ring-brand-500/20"
             />
           </div>
@@ -125,7 +135,7 @@ export function UpdateProfileForm({ email, name }: UpdateProfileValues) {
               type="email"
               autoComplete="email"
               placeholder="you@company.com"
-              {...(register("email"))}
+              {...register("email")}
               className="w-full rounded-xl border border-ink-700 bg-ink-900/60 py-3 pr-3 pl-10 text-sm text-white transition outline-none placeholder:text-ink-500 focus:border-brand-500/60 focus:ring-2 focus:ring-brand-500/20"
             />
           </div>
