@@ -80,7 +80,13 @@ export const getWebsiteStatus = asyncHandler(async (req, res) => {
   });
   ApiResponse.success(
     res,
-    { website, tickCount, upCount, downCount, avgResponseTime },
+    {
+      website,
+      tickCount,
+      upCount,
+      downCount,
+      avgResponseTime: avgResponseTime._avg.response_time_ms,
+    },
     "Website retrieved successfully",
   );
 });
@@ -96,6 +102,9 @@ export const getWebsites = asyncHandler(async (req, res) => {
       ticks: {
         take: 1,
         orderBy: { createdAt: "desc" },
+      },
+      _count: {
+        select: { ticks: { where: { status: websiteStatus.UP } } },
       },
     },
   });

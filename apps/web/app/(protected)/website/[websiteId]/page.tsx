@@ -93,29 +93,36 @@ export default function WebsiteDetailPage() {
     });
   const website: Website | null = data?.data?.website ?? null;
   const ticks = website?.ticks ?? [];
-  const ticksCount = website?.tickCount ?? 0;
-  const up = website?.upCount ?? 0;
-  const down = website?.downCount ?? 0;
-  const avgResponseTime = website?.avgResponseTime ?? 0;
+  const {
+    tickCount: ticksCount,
+    upCount: up,
+    downCount: down,
+    avgResponseTime,
+  } = data?.data || {
+    tickCount: 0,
+    upCount: 0,
+    downCount: 0,
+    avgResponseTime: 0,
+  };
 
   const stats = useMemo(() => {
-    const ticks = website?.ticks ?? [];
-    if (ticks.length === 0)
+    if (ticksCount === 0)
       return {
         uptime: "—",
         avgResponse: 0,
         upCount: 0,
         downCount: 0,
-        lastCheck: null,
+        // lastCheck: null,
       };
     return {
-      uptime: ((up / (ticksCount)) * 100).toFixed(1) + "%",
+      uptime: ((up / ticksCount) * 100).toFixed(1) + "%",
       avgResponse: avgResponseTime.toFixed(0),
       upCount: up,
       downCount: down,
-      lastCheck: ticks[ticks.length - 1].createdAt,
+      // lastCheck: ticks && ticks[ticks.length - 1].createdAt || "—",
     };
-  }, [website?.ticks]);
+  }, [up, down, ticksCount, avgResponseTime]);
+  console.log("stats", stats);
 
   //   const recentTicks = useMemo(() => [...ticks].reverse(), [ticks]);
   //   const recentTicks = useMemo(() => [...ticks].reverse().slice(0, 12), [ticks]);
@@ -294,7 +301,7 @@ export default function WebsiteDetailPage() {
         </div>
 
         {/* Charts */}
-        <div className="mt-6 grid gap-4 lg:grid-cols-2">
+        <div className="mt-6 grid gap-4 lg:grid-cols-2 h-fit">
           <ResponseTimeChart ticks={ticks} />
           <UptimeChart ticks={ticks} />
         </div>

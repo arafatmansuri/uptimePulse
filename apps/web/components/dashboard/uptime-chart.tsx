@@ -29,7 +29,7 @@ export function UptimeChart({ ticks }: { ticks: Tick[] }) {
         </div>
       </div>
 
-      <div className="flex items-end gap-1" style={{ height: '80px' }}>
+      <div className="flex items-end gap-1" style={{ height: '180px' }}>
         {bars.map((tick, i) => {
           const isUp = tick.status === WebsiteStatus.UP;
           const isUnknown = tick.status === WebsiteStatus.Unknown;

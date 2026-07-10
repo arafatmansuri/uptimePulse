@@ -22,7 +22,7 @@ export function ResponseTimeChart({ ticks }: { ticks: Tick[] }) {
   if (chartData.length === 0) return null;
 
   const width = 100;
-  const height = 100;
+  const height = 50;
   const padding = 4;
   const points = chartData.map((d, i) => {
     const x =
@@ -59,7 +59,7 @@ export function ResponseTimeChart({ ticks }: { ticks: Tick[] }) {
 
       <svg
         viewBox={`0 0 ${width} ${height}`}
-        className="h-40 w-full"
+        className="h-fit w-full"
         preserveAspectRatio="none"
       >
         <defs>
