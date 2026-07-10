@@ -200,7 +200,7 @@ export default function WebsiteDetailPage() {
               <RefreshCw
                 className={`h-4 w-4 ${isFetching ? "animate-spin" : ""}`}
               />
-              Refresh
+              <span className="hidden sm:inline">Refresh</span>
             </Button>
             {<UserMenu />}
           </div>
@@ -376,8 +376,8 @@ export default function WebsiteDetailPage() {
 
           {/* Management panels */}
           {/* <div className="space-y-4"> */}
-            {/* Regions */}
-            {/* <div className="rounded-2xl border border-ink-800 bg-ink-900/40 p-5">
+          {/* Regions */}
+          {/* <div className="rounded-2xl border border-ink-800 bg-ink-900/40 p-5">
               <div className="flex items-center gap-2">
                 <MapPin className="h-4 w-4 text-brand-400" />
                 <h3 className="text-sm font-semibold text-white">
@@ -426,8 +426,8 @@ export default function WebsiteDetailPage() {
               </div>
             </div> */}
 
-            {/* Email alerts */}
-            {/* <div className="rounded-2xl border border-ink-800 bg-ink-900/40 p-5">
+          {/* Email alerts */}
+          {/* <div className="rounded-2xl border border-ink-800 bg-ink-900/40 p-5">
               <div className="flex items-center gap-2">
                 <Bell className="h-4 w-4 text-amber-400" />
                 <h3 className="text-sm font-semibold text-white">

@@ -28,5 +28,5 @@ export default function ProtectedLayout({
       localStorage.setItem("user", JSON.stringify(user));
     }
   }, [isSuccess, authData]);
-  return <div>{children}</div>;
+  return <div className="w-full">{children}</div>;
 }

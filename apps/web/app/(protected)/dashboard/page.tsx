@@ -287,10 +287,10 @@ export default function DashboardPage() {
               <RefreshCw
                 className={`h-4 w-4 ${isFetching ? "animate-spin" : ""}`}
               />
-              Refresh
+              <span className="hidden sm:inline">Refresh</span>
             </Button>
             <Button size="sm" onClick={() => setModalOpen(true)}>
-              <Plus className="h-4 w-4" /> Add website
+              <Plus className="h-4 w-4" /> <span className="hidden sm:inline">Add website</span>
             </Button>
             <UserMenu />
           </div>
