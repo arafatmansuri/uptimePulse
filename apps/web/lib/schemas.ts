@@ -37,6 +37,17 @@ export const signInSchema = z.object({
     .nonoptional({ error: 'Password is required' }),
 });
 
+export const updateProfileSchema = z.object({
+  name: z
+    .string()
+    .nonempty({ message: "Name is required" })
+    .nonoptional({ error: "Name is required" }),
+  email: z
+    .email({ message: "Invalid email format" })
+    .nonempty({ message: "Email is required" })
+    .nonoptional({ error: "Email is required" }),
+});
+
 export const addWebsiteSchema = z.object({
     url: z.url({error: "Invalid URL format"}).nonempty({message: "URL is required"}).nonoptional({error: "URL is required"}),
     description: z.string().optional()
@@ -44,4 +55,5 @@ export const addWebsiteSchema = z.object({
 
 export type SignUpValues = z.infer<typeof signUpSchema>;
 export type SignInValues = z.infer<typeof signInSchema>;
+export type UpdateProfileValues = z.infer<typeof updateProfileSchema>;
 export type AddWebsiteValues = z.infer<typeof addWebsiteSchema>;

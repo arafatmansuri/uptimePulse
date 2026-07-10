@@ -7,7 +7,11 @@ import {
   generateToken,
   hashPassword,
 } from "../../utils/userUtils";
-import { signInSchema, signUpSchema } from "../../validations/userValidtion";
+import {
+  signInSchema,
+  signUpSchema,
+  updateProfileSchema,
+} from "../../validations/userValidtion";
 
 export const getUsers = asyncHandler(async (req, res) => {
   const users = await prisma.user.findMany();
@@ -163,12 +167,42 @@ export const signOut = asyncHandler(async (req, res) => {
   res.clearCookie("refresh_token", {
     httpOnly: true,
     secure: true,
-    sameSite: "none", 
+    sameSite: "none",
     path: "/",
   });
+  ApiResponse.success(res, {}, "User signed out successfully");
+});
+export const updateProfile = asyncHandler(async (req, res) => {
+  const user = req.user;
+  if (!user) {
+    throw AppError.unauthorized("User not authenticated");
+  }
+  const parsedUpdateData = updateProfileSchema.safeParse(req.body);
+  if (!parsedUpdateData.success) {
+    throw AppError.badRequest(
+      parsedUpdateData.error.issues[0].message || "Invalid input",
+      { field: parsedUpdateData.error.issues[0].path.join(".") },
+    );
+  }
+  const { name, email } = parsedUpdateData.data;
+  const existingUser = await prisma.user.findFirst({
+    where: { email: email, NOT: { id: user.id } },
+  });
+  if (existingUser) {
+    throw AppError.badRequest("This email is already in use", {
+      field: ["email"],
+    });
+  }
+  let updatedUser = user;
+  if (!(name === user.name) || !(email === user.email)){
+    updatedUser = await prisma.user.update({
+      where: { id: user.id },
+      data: { name, email },
+      omit: { password: true, refreshToken: true },
+    });}
   ApiResponse.success(
     res,
-    {},
-    "User signed out successfully"
+    { user: updatedUser },
+    "Profile updated successfully",
   );
 });

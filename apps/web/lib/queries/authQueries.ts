@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { BACKEND_URL, Methods } from "../constants";
 import { AuthRequestData } from "../requests";
@@ -31,13 +31,15 @@ async function auth({
   }
 }
 
-export const useAuthMutation = () =>
-  useMutation<AuthResponse, ApiErrorResponse, AuthRequestData>({
+export const useAuthMutation = () => {
+  const queryClient = useQueryClient();
+  return useMutation<AuthResponse, ApiErrorResponse, AuthRequestData>({
     mutationFn: async ({
       data,
       endpoint,
+      method
     }: AuthRequestData): Promise<AuthResponse> =>
-      await auth({ data, method: Methods.POST, endpoint: endpoint }),
+      await auth({ data, method: method || Methods.POST, endpoint: endpoint }),
     mutationKey: ["authMutation"],
     onError(error) {
       if (error.status === 401) {
@@ -45,7 +47,11 @@ export const useAuthMutation = () =>
         window.location.href = "/signin";
       }
     },
+    onSuccess() {
+      queryClient.invalidateQueries({ queryKey: ["authQuery"] });
+    },
   });
+};
 export const useAuthQuery = ({ endpoint }: AuthRequestData) =>
   useQuery<AuthResponse, ApiErrorResponse>({
     queryFn: async (): Promise<AuthResponse> =>
