@@ -70,4 +70,4 @@ export type WebsiteResponse = ApiResponse<{
   downCount: number;
   avgResponseTime: number;
 }>;
-export type WebsitesResponse = ApiResponse<{ websites: Website[] }>;
+export type WebsitesResponse = ApiResponse<{ websites: Website[], avgResponseTime: number; totalWebsites: number }>;

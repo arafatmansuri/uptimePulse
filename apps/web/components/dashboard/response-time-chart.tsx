@@ -9,7 +9,6 @@ export function ResponseTimeChart({ ticks }: { ticks: Tick[] }) {
       (a, b) =>
         new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
     );
-
     if (!sorted.length) return [];
 
     const values = sorted.map((t) => t.response_time_ms);
@@ -21,6 +20,7 @@ export function ResponseTimeChart({ ticks }: { ticks: Tick[] }) {
       value: t.response_time_ms,
       status: t.status,
       normalized: max === min ? 0.5 : (t.response_time_ms - min) / (max - min),
+      id: t.id,
     }));
   }, [ticks]);
 
@@ -111,12 +111,11 @@ export function ResponseTimeChart({ ticks }: { ticks: Tick[] }) {
 
         {/* Points */}
         {points.map((p, i) => (
-          <g key={i}>
-            {/* <circle cx={p.x} cy={p.y} r="2" fill="rgba(74,222,128,0.18)" /> */}
+          <g key={i} className="">
             <circle
               cx={p.x}
               cy={p.y}
-              r="1.2"
+              r="0"
               fill={
                 p.status === WebsiteStatus.UP
                   ? "rgb(74 222 128)"
@@ -146,14 +145,14 @@ export function ResponseTimeChart({ ticks }: { ticks: Tick[] }) {
         </span>
       </div>
 
-      {/* <div className="mt-4 flex justify-between text-xs text-ink-400">
+      {/* <div className="mt-1 flex justify-between text-xs text-ink-400">
         <span>
-          Min: {Math.min(...chartData.map((d) => d.value))}
+          {Math.min(...chartData.map((d) => d.value))}
           ms
         </span>
 
         <span>
-          Max: {Math.max(...chartData.map((d) => d.value))}
+          {Math.max(...chartData.map((d) => d.value))}
           ms
         </span>
       </div> */}

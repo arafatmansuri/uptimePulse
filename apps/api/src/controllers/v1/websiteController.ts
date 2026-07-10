@@ -75,7 +75,7 @@ export const getWebsiteStatus = asyncHandler(async (req, res) => {
     where: { websiteId: req.params.id, status: websiteStatus.DOWN },
   });
   const avgResponseTime = await prisma.websiteTick.aggregate({
-    where: { websiteId: req.params.id },
+    where: { websiteId: req.params.id, status: websiteStatus.UP },
     _avg: { response_time_ms: true },
   });
   ApiResponse.success(
@@ -111,9 +111,22 @@ export const getWebsites = asyncHandler(async (req, res) => {
   if (!websites) {
     throw AppError.notFound("No websites found for this user");
   }
+  const result: { avg_response: number }[] = await prisma.$queryRaw`
+  SELECT AVG(latest.response_time_ms) AS avg_response
+  FROM (
+    SELECT DISTINCT ON ("websiteId") response_time_ms, status
+    FROM "websiteTick"
+    ORDER BY "websiteId", "createdAt" DESC
+  ) latest
+  WHERE latest.status = 'UP';
+`;
   ApiResponse.success(
     res,
-    { websites, totalWebsites: websites.length },
+    {
+      websites,
+      totalWebsites: websites.length,
+      avgResponseTime: result[0]?.avg_response || 0,
+    },
     "Websites retrieved successfully",
   );
 });

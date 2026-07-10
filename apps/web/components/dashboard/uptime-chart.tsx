@@ -29,7 +29,7 @@ export function UptimeChart({ ticks }: { ticks: Tick[] }) {
         </div>
       </div>
 
-      <div className="flex items-end gap-1 md:h-44 h-24" >
+      <div className="flex items-end gap-1 md:h-44 h-24">
         {bars.map((tick, i) => {
           const isUp = tick.status === WebsiteStatus.UP;
           const isUnknown = tick.status === WebsiteStatus.Unknown;
@@ -52,7 +52,7 @@ export function UptimeChart({ ticks }: { ticks: Tick[] }) {
                       ? 'bg-ink-600 group-hover:bg-ink-500'
                       : 'bg-red-500/70 group-hover:bg-red-400'
                 }`}
-                style={{ height: `${heightPct}%` }}
+                style={{ height: `${heightPct*1.5}%` }}
               />
               <div className="pointer-events-none absolute bottom-full left-1/2 z-10 mb-2 hidden -translate-x-1/2 whitespace-nowrap rounded-lg border border-ink-700 bg-ink-900 px-2.5 py-1.5 text-xs text-ink-200 shadow-soft group-hover:block">
                 <div className="font-semibold text-white">

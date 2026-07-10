@@ -237,15 +237,7 @@ export default function DashboardPage() {
   const operational = websites.filter(
     (w) => w.ticks[0].status === WebsiteStatus.UP
   ).length;
-  const avgResponse =
-    websites.filter((w) => w.ticks[0].status === WebsiteStatus.UP).length > 0
-      ? Math.round(
-          websites
-            .filter((w) => w.ticks[0].status === WebsiteStatus.UP)
-            .reduce((sum, w) => sum + w.ticks[0].response_time_ms, 0) /
-            operational
-        )
-      : 0;
+  const avgResponse = Math.round(data?.data.avgResponseTime || 0.0);
   const downCount = websites.filter(
     (w) => w.ticks[0].status === WebsiteStatus.DOWN
   ).length;
