@@ -122,7 +122,7 @@ function WebsiteRow({
   };
   return (
     <div
-      className="group flex w-full cursor-pointer items-center justify-between gap-4 border-b border-ink-800/60 px-5 py-4 transition last:border-b-0 hover:bg-ink-900/40"
+      className="group flex w-full cursor-pointer items-center justify-between gap-4 overflow-x-scroll border-b border-ink-800/60 px-5 py-4 transition last:border-b-0 hover:bg-ink-900/40 md:overflow-auto"
       onClick={handleClick}
     >
       <div className="flex min-w-0 items-center gap-3">
@@ -151,7 +151,7 @@ function WebsiteRow({
           <div className="text-xs text-ink-500">Response</div>
           <div className="flex items-center gap-1 text-sm font-medium text-ink-200">
             <Zap className="h-3 w-3 text-amber-400" />
-            {website.ticks[0].response_time_ms}ms
+            <span>{website.ticks[0].response_time_ms}ms</span>
           </div>
         </div>
         {/* <div className="text-right">
@@ -162,11 +162,11 @@ function WebsiteRow({
         </div> */}
         <div className="text-right">
           <div className="text-xs text-ink-500">Last checked</div>
-          <div className="flex items-center gap-1 text-sm font-medium text-ink-200">
+          <div className="items-center gap-1 text-sm font-medium text-ink-200 flex">
             {website.ticks[0].status == WebsiteStatus.Unknown ? (
               <div>Unknown</div>
             ) : (
-              <div>
+              <div className="flex items-center gap-1">
                 <Clock className="h-3 w-3 text-green-400" />
                 {timeAgo(new Date(website.ticks[0].createdAt).toISOString())}
               </div>
@@ -176,7 +176,7 @@ function WebsiteRow({
       </div>
 
       <div className="flex shrink-0 items-center gap-2">
-        <Badge variant="outline" className={cfg.badge}>
+        <Badge variant="outline" className={`${cfg.badge} hidden md:inline-flex`}>
           {cfg.label}
         </Badge>
         <div className="flex items-center gap-1 transition md:opacity-0 md:group-hover:opacity-100">
@@ -184,7 +184,7 @@ function WebsiteRow({
             // href={`/website/${website.id}`}
             onClick={() => navigate.push(`/website/${website.id}`)}
             title="View website"
-            className="grid h-8 w-8 place-items-center rounded-lg text-ink-400 transition hover:bg-ink-800 hover:text-white bg-ink-900/60"
+            className="grid h-8 w-8 place-items-center rounded-lg bg-ink-900/60 text-ink-400 transition hover:bg-ink-800 hover:text-white"
           >
             <ArrowUpRight className="h-4 w-4" />
           </Button>
@@ -219,7 +219,7 @@ export default function DashboardPage() {
     "all"
   );
   // const [regionFilter, setRegionFilter] = useState("All regions");
-  const { data, isLoading, isError, refetch,isFetched, isFetching, error } =
+  const { data, isLoading, isError, refetch, isFetched, isFetching, error } =
     useWebsiteQuery<WebsitesResponse>({ endpoint: "/" });
   const websites = data?.data.websites ?? [];
   const filtered = useMemo(() => {

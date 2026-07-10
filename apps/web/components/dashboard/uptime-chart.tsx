@@ -18,7 +18,7 @@ export function UptimeChart({ ticks }: { ticks: Tick[] }) {
 
   return (
     <div className="rounded-2xl border border-ink-800 bg-ink-900/40 p-5">
-      <div className="mb-4 flex items-center justify-between">
+      <div className="md:mb-4 flex items-center justify-between">
         <div>
           <h3 className="text-sm font-semibold text-white">Uptime history</h3>
           <p className="text-xs text-ink-400">Last {bars.length} checks</p>
@@ -29,7 +29,7 @@ export function UptimeChart({ ticks }: { ticks: Tick[] }) {
         </div>
       </div>
 
-      <div className="flex items-end gap-1" style={{ height: '180px' }}>
+      <div className="flex items-end gap-1 md:h-44 h-24" >
         {bars.map((tick, i) => {
           const isUp = tick.status === WebsiteStatus.UP;
           const isUnknown = tick.status === WebsiteStatus.Unknown;

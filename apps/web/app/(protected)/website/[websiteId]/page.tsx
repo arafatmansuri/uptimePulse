@@ -116,13 +116,12 @@ export default function WebsiteDetailPage() {
       };
     return {
       uptime: ((up / ticksCount) * 100).toFixed(1) + "%",
-      avgResponse: avgResponseTime.toFixed(0),
+      avgResponse: avgResponseTime,
       upCount: up,
       downCount: down,
       // lastCheck: ticks && ticks[ticks.length - 1].createdAt || "—",
     };
   }, [up, down, ticksCount, avgResponseTime]);
-  console.log("stats", stats);
 
   //   const recentTicks = useMemo(() => [...ticks].reverse(), [ticks]);
   //   const recentTicks = useMemo(() => [...ticks].reverse().slice(0, 12), [ticks]);
@@ -301,7 +300,7 @@ export default function WebsiteDetailPage() {
         </div>
 
         {/* Charts */}
-        <div className="mt-6 grid gap-4 lg:grid-cols-2 h-fit">
+        <div className="mt-6 grid gap-4 lg:grid-cols-2">
           <ResponseTimeChart ticks={ticks} />
           <UptimeChart ticks={ticks} />
         </div>
@@ -376,7 +375,7 @@ export default function WebsiteDetailPage() {
           </div>
 
           {/* Management panels */}
-          <div className="space-y-4">
+          {/* <div className="space-y-4"> */}
             {/* Regions */}
             {/* <div className="rounded-2xl border border-ink-800 bg-ink-900/40 p-5">
               <div className="flex items-center gap-2">
@@ -478,7 +477,7 @@ export default function WebsiteDetailPage() {
                 </Button>
               </div>
             </div> */}
-          </div>
+          {/* </div> */}
         </div>
       </main>
 

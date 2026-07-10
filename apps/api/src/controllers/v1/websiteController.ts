@@ -85,7 +85,7 @@ export const getWebsiteStatus = asyncHandler(async (req, res) => {
       tickCount,
       upCount,
       downCount,
-      avgResponseTime: avgResponseTime._avg.response_time_ms,
+      avgResponseTime: avgResponseTime._avg.response_time_ms?.toFixed(0) || 0,
     },
     "Website retrieved successfully",
   );
