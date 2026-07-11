@@ -4,9 +4,8 @@ import { ChangePasswordForm } from "@/components/auth/change-password-form";
 import { DeleteAccountForm } from "@/components/auth/delete-account";
 import { UpdateProfileForm } from "@/components/auth/update-profile-form";
 import { UserMenu } from "@/components/dashboard/user-menu";
-import { Button } from "@/components/ui/button";
 import { User } from "@/lib/responses";
-import { Activity, Globe } from "lucide-react";
+import { Activity } from "lucide-react";
 import { useEffect, useState } from "react";
 
 export default function SettingsPage() {
@@ -63,7 +62,7 @@ export default function SettingsPage() {
 
         {/* Notifications section */}
         {/* Danger zone */}
-        <DeleteAccountForm/>
+        <DeleteAccountForm />
       </main>
     </div>
   );

@@ -7,6 +7,7 @@ import {
   WebsiteResponse,
   WebsitesResponse,
 } from "../responses";
+import { refreshAccessToken } from "./authQueries";
 
 async function websiteRequest<T>({
   endpoint,
@@ -66,13 +67,17 @@ export const useWebsiteQuery = <T extends WebsitesResponse | WebsiteResponse>({ 
     queryFn: async (): Promise<T> =>
       await websiteRequest<T>({ method: Methods.GET, endpoint }),
     queryKey: ["websiteQuery"],
-    throwOnError(error) {
-      if (error.status === 401) {
-        localStorage.removeItem("user");
-        window.location.href = "/signin";
-        return false;
-      }
-      return false;
-    },
+    // throwOnError(error) {
+    //   if (error.status === 401) {
+    //     refreshAccessToken()
+    //       .then(() => {
+    //         return false;
+    //       })
+    //       .catch(() => {
+    //         return false;
+    //       });
+    //   }
+    //   return false;
+    // },
   });
 };

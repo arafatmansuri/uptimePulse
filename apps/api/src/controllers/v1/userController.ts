@@ -195,19 +195,20 @@ export const updateProfile = asyncHandler(async (req, res) => {
     });
   }
   let updatedUser = user;
-  if (!(name === user.name) || !(email === user.email)){
+  if (!(name === user.name) || !(email === user.email)) {
     updatedUser = await prisma.user.update({
       where: { id: user.id },
       data: { name, email },
       omit: { password: true, refreshToken: true },
-    });}
+    });
+  }
   ApiResponse.success(
     res,
     { user: updatedUser },
     "Profile updated successfully",
   );
 });
-export const changePassword = asyncHandler(async (req,res)=>{
+export const changePassword = asyncHandler(async (req, res) => {
   const parsedChangePasswordData = changePasswordSchema.safeParse(req.body);
   if (!parsedChangePasswordData.success) {
     throw AppError.badRequest(
@@ -220,13 +221,20 @@ export const changePassword = asyncHandler(async (req,res)=>{
   if (!user) {
     throw AppError.unauthorized("User not authenticated");
   }
-  const userWithPassword = await prisma.user.findUnique({ where: { id: user.id } });
-  if(!userWithPassword || !userWithPassword.password){
+  const userWithPassword = await prisma.user.findUnique({
+    where: { id: user.id },
+  });
+  if (!userWithPassword || !userWithPassword.password) {
     throw AppError.internal("Something went wrong. Please try again later.");
   }
-  const isPasswordValid = await comparePasswords(currentPassword, userWithPassword.password);
+  const isPasswordValid = await comparePasswords(
+    currentPassword,
+    userWithPassword.password,
+  );
   if (!isPasswordValid) {
-    throw AppError.badRequest("Current password is incorrect", { field: ["currentPassword"] });
+    throw AppError.badRequest("Current password is incorrect", {
+      field: ["currentPassword"],
+    });
   }
   const hashedNewPassword = await hashPassword(newPassword);
   await prisma.user.update({
@@ -235,12 +243,14 @@ export const changePassword = asyncHandler(async (req,res)=>{
   });
   ApiResponse.success(res, {}, "Password changed successfully");
 });
-export const deleteAccount = asyncHandler(async (req,res)=>{
+export const deleteAccount = asyncHandler(async (req, res) => {
   const user = req.user;
   if (!user) {
     throw AppError.unauthorized("User not authenticated");
   }
-  await prisma.websiteTick.deleteMany({ where: { website: { userId: user.id } } });
+  await prisma.websiteTick.deleteMany({
+    where: { website: { userId: user.id } },
+  });
   await prisma.website.deleteMany({ where: { userId: user.id } });
   await prisma.user.delete({ where: { id: user.id } });
   res.clearCookie("access_token", {
@@ -250,4 +260,39 @@ export const deleteAccount = asyncHandler(async (req,res)=>{
     path: "/",
   });
   ApiResponse.success(res, {}, "Account deleted successfully");
+});
+export const refreshAccessToken = asyncHandler(async (req, res) => {
+  const refreshToken = req.cookies.refresh_token;
+  if (!refreshToken) {
+    throw AppError.unauthorized("Refresh token not provided");
+  }
+  const user = await prisma.user.findFirst({
+    where: { refreshToken: refreshToken },
+  });
+  if (!user) {
+    throw AppError.unauthorized("Invalid refresh token");
+  }
+  const newAccessToken = generateToken(user.id, "access");
+  ApiResponse.success(
+    res,
+    {
+      token: newAccessToken,
+      user: { ...user, password: null, refreshToken: null },
+    },
+    "Access token refreshed successfully",
+    200,
+    [
+      {
+        name: "access_token",
+        value: newAccessToken,
+        options: {
+          httpOnly: true,
+          secure: true,
+          sameSite: "none",
+          path: "/",
+          maxAge: 1000 * 60 * 60, // 1 hour
+        },
+      },
+    ],
+  );
 });

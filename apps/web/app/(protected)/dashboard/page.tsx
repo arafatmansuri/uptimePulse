@@ -55,7 +55,7 @@ const statusFilters: { label: string; value: WebsiteStatus | "all" }[] = [
   { label: "Down", value: WebsiteStatus.DOWN },
 ];
 
-const regions = [
+export const regions = [
   "All regions",
   "North America",
   "Europe",

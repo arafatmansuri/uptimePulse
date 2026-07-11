@@ -59,10 +59,36 @@ export const useAuthQuery = ({ endpoint }: AuthRequestData) =>
     queryKey: ["authQuery"],
     throwOnError(error) {
       if (error.status === 401) {
-        localStorage.removeItem("user");
-        window.location.href = "/signin";
-        return false;
+        refreshAccessToken().then(() => {
+          return false;
+        }).catch(() => {
+          return false;
+        });
       }
       return false;
     },
   });
+export const useRefreshTokenQuery = () =>
+  useQuery<AuthResponse, ApiErrorResponse>({
+    queryFn: async (): Promise<AuthResponse> => await auth({ method: Methods.POST, endpoint: "/refresh-token" }),
+    queryKey: ["refreshTokenQuery"],
+    throwOnError() {
+      localStorage.removeItem("user");
+      window.location.href = "/signin";
+      return false;
+    },
+  });
+
+export const refreshAccessToken = async () => {
+  try {
+    auth({ method: Methods.POST, endpoint: "/refresh-token" }).then((res) => {
+      window.location.reload();
+      localStorage.setItem("user", JSON.stringify(res.data.user));
+      return false;
+    });
+  } catch (error) {
+    localStorage.removeItem("user");
+    window.location.href = "/signin";
+    return false;
+  }
+} 
