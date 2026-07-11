@@ -235,3 +235,19 @@ export const changePassword = asyncHandler(async (req,res)=>{
   });
   ApiResponse.success(res, {}, "Password changed successfully");
 });
+export const deleteAccount = asyncHandler(async (req,res)=>{
+  const user = req.user;
+  if (!user) {
+    throw AppError.unauthorized("User not authenticated");
+  }
+  await prisma.websiteTick.deleteMany({ where: { website: { userId: user.id } } });
+  await prisma.website.deleteMany({ where: { userId: user.id } });
+  await prisma.user.delete({ where: { id: user.id } });
+  res.clearCookie("access_token", {
+    httpOnly: true,
+    secure: true,
+    sameSite: "none",
+    path: "/",
+  });
+  ApiResponse.success(res, {}, "Account deleted successfully");
+});

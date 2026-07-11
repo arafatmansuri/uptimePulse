@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { changePassword, getuser, signIn, signOut, signUp, updateProfile } from "../../controllers/v1/userController";
+import { changePassword, deleteAccount, getuser, signIn, signOut, signUp, updateProfile } from "../../controllers/v1/userController";
 import { userMiddleware } from "../../middlewares/userMiddleware";
 
 const usersRouter = Router();
@@ -11,6 +11,7 @@ usersRouter.use(userMiddleware);
 usersRouter.get("/me", getuser);
 usersRouter.put("/profile", updateProfile);
 usersRouter.put("/password", changePassword);
+usersRouter.delete("/account", deleteAccount);
 usersRouter.post("/signout", signOut);
 
 export default usersRouter;
