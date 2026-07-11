@@ -8,6 +8,7 @@ import {
   hashPassword,
 } from "../../utils/userUtils";
 import {
+  changePasswordSchema,
   signInSchema,
   signUpSchema,
   updateProfileSchema,
@@ -205,4 +206,32 @@ export const updateProfile = asyncHandler(async (req, res) => {
     { user: updatedUser },
     "Profile updated successfully",
   );
+});
+export const changePassword = asyncHandler(async (req,res)=>{
+  const parsedChangePasswordData = changePasswordSchema.safeParse(req.body);
+  if (!parsedChangePasswordData.success) {
+    throw AppError.badRequest(
+      parsedChangePasswordData.error.issues[0].message || "Invalid input",
+      { field: parsedChangePasswordData.error.issues[0].path.join(".") },
+    );
+  }
+  const { currentPassword, newPassword } = parsedChangePasswordData.data;
+  const user = req.user;
+  if (!user) {
+    throw AppError.unauthorized("User not authenticated");
+  }
+  const userWithPassword = await prisma.user.findUnique({ where: { id: user.id } });
+  if(!userWithPassword || !userWithPassword.password){
+    throw AppError.internal("Something went wrong. Please try again later.");
+  }
+  const isPasswordValid = await comparePasswords(currentPassword, userWithPassword.password);
+  if (!isPasswordValid) {
+    throw AppError.badRequest("Current password is incorrect", { field: ["currentPassword"] });
+  }
+  const hashedNewPassword = await hashPassword(newPassword);
+  await prisma.user.update({
+    where: { id: user.id },
+    data: { password: hashedNewPassword },
+  });
+  ApiResponse.success(res, {}, "Password changed successfully");
 });

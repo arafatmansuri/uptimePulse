@@ -48,6 +48,18 @@ export const updateProfileSchema = z.object({
     .nonoptional({ error: "Email is required" }),
 });
 
+export const changePasswordSchema = z.object({
+  currentPassword: z
+    .string()
+    .nonempty({ message: "Current Password is required" })
+    .nonoptional({ error: "Current Password is required" }),
+  newPassword: z
+    .string()
+    .min(8, { message: "New Password must be at least 8 characters long" })
+    .nonempty({ message: "New Password is required" })
+    .nonoptional({ error: "New Password is required" }),
+});
+
 export const addWebsiteSchema = z.object({
     url: z.url({error: "Invalid URL format"}).nonempty({message: "URL is required"}).nonoptional({error: "URL is required"}),
     description: z.string().optional()
@@ -56,4 +68,5 @@ export const addWebsiteSchema = z.object({
 export type SignUpValues = z.infer<typeof signUpSchema>;
 export type SignInValues = z.infer<typeof signInSchema>;
 export type UpdateProfileValues = z.infer<typeof updateProfileSchema>;
+export type ChangePasswordValues = z.infer<typeof changePasswordSchema>;
 export type AddWebsiteValues = z.infer<typeof addWebsiteSchema>;

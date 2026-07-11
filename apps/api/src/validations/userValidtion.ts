@@ -46,3 +46,14 @@ export const updateProfileSchema = z.object({
     .nonempty({ message: "Email is required" })
     .nonoptional({ error: "Email is required" }),
 });
+export const changePasswordSchema = z.object({
+  currentPassword: z
+    .string()
+    .nonempty({ message: "Current Password is required" })
+    .nonoptional({ error: "Current Password is required" }),
+  newPassword: z
+    .string()
+    .min(8, { message: "New Password must be at least 8 characters long" })
+    .nonempty({ message: "New Password is required" })
+    .nonoptional({ error: "New Password is required" }),
+});
